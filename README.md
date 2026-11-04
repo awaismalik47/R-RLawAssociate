@@ -46,7 +46,7 @@ Search the project for `PLACEHOLDER` to find every item. Run `npm run build && n
 
 | Item | Where to change it |
 |---|---|
-| **Domain** (currently `https://www.rrlawassociates.com`) | `astro.config.mjs` (`SITE_URL`), `src/data/site.ts` (`url`), `public/robots.txt`, `public/_redirects` |
+| **Domain** (currently `https://www.rrlawassociates.com`) | `astro.config.mjs` (`SITE_URL`), `src/data/site.ts` (`url`), `public/robots.txt` (and the Cloudflare Redirect Rule, see section 6) |
 | **Office hours** | `src/data/site.ts` → `hours` (used on the site and in schema) |
 | **Email** | `src/data/site.ts` → `email` (hidden until filled in) |
 | **Google Maps listing URL** and **embed** | `src/data/site.ts` → `googleMapsUrl`, `googleMapsEmbedSrc` (Google Maps → Share → Embed a map → copy only the `src` URL) |
@@ -79,31 +79,26 @@ Search the project for `PLACEHOLDER` to find every item. Run `npm run build && n
 
 Until the key is set, the form shows a notice asking visitors to call or WhatsApp instead. The form has client-side validation, a honeypot field against spam bots, and success and error messages. In the Web3Forms dashboard you can also restrict submissions to your domain.
 
-## 6. Deploy free on Cloudflare Pages (recommended)
+## 6. Deploy free on Cloudflare Workers (recommended)
 
-1. Put the project in a GitHub (or GitLab) repository:
-   ```bash
-   git init && git add . && git commit -m "Initial site"
-   # create an empty repository on github.com, then:
-   git remote add origin https://github.com/<your-account>/rr-law-associates.git
-   git push -u origin main
-   ```
-2. Sign in at <https://dash.cloudflare.com> → **Workers & Pages** → **Create** → **Pages** → **Connect to Git** and choose the repository.
+The site deploys as a **Cloudflare Worker with static assets**. `wrangler.jsonc` in the project root tells Cloudflare to serve the built `dist/` folder and to use `dist/404.html` for missing pages. No server code or Cloudflare adapter is involved; the site stays fully static.
+
+1. The code lives at <https://github.com/awaismalik47/R-RLawAssociate> (branch `main`).
+2. Sign in at <https://dash.cloudflare.com> → **Workers & Pages** → **Create** → **Import a repository**, connect GitHub and choose the repository.
 3. Build settings:
-   - Framework preset: **Astro**
    - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Environment variable: `NODE_VERSION` = `22`
-4. Click **Save and Deploy**. You get a free `*.pages.dev` address. Every push to `main` redeploys automatically.
+   - Deploy command: `npx wrangler deploy`
+   - Environment variable (build): `NODE_VERSION` = `22`
+4. Click **Deploy**. You get a free `rr-law-associates.<your-subdomain>.workers.dev` address. Every push to `main` rebuilds and redeploys automatically.
 
-**Custom domain on Cloudflare Pages**
+**Custom domain**
 
-1. In the Pages project → **Custom domains** → **Set up a custom domain** → enter `www.yourdomain.com`.
-2. If the domain's DNS is on Cloudflare, the record is created for you. Otherwise, add the CNAME record Cloudflare shows (for example `www` → `rr-law-associates.pages.dev`) at your domain registrar.
-3. Add the bare domain (`yourdomain.com`) as well. `public/_redirects` sends it to `www`.
-4. HTTPS certificates are issued automatically. Under **SSL/TLS → Edge Certificates**, turn on **Always Use HTTPS**.
+1. Add the domain to Cloudflare (**Add a domain**) and change the nameservers at your registrar to the two Cloudflare shows.
+2. In the Worker → **Settings → Domains & Routes** → **Add** → **Custom domain**, enter `www.yourdomain.com`. Add `yourdomain.com` the same way.
+3. Redirect the bare domain to `www`: in the domain's dashboard → **Rules → Redirect Rules** → **Create rule** → template **"Redirect from root to WWW"** (301, preserve path and query string). Host redirects like this cannot go in `public/_redirects` on Cloudflare.
+4. Under **SSL/TLS → Edge Certificates**, turn on **Always Use HTTPS**. Certificates are issued automatically.
 
-`public/_headers` adds HSTS, `X-Content-Type-Options`, `Referrer-Policy` and long cache lifetimes for fonts and built assets. Cloudflare Pages and Netlify both read it.
+`public/_headers` adds HSTS, `X-Content-Type-Options`, `Referrer-Policy` and long cache lifetimes for fonts and built assets. `public/_redirects` holds path redirects (for example `/about-us` → `/about/`). Cloudflare static assets and Netlify both read these files.
 
 ## 7. Alternative: Netlify
 
@@ -111,7 +106,7 @@ Until the key is set, the form shows a notice asking visitors to call or WhatsAp
 2. Build command `npm run build`, publish directory `dist`. Under **Site configuration → Environment variables**, add `NODE_VERSION` = `22`.
 3. Deploy. For a custom domain: **Domain management** → **Add a domain**, then follow Netlify's DNS instructions. HTTPS is automatic. Set the `www` version as the primary domain.
 
-Netlify reads the same `public/_headers` and `public/_redirects` files.
+Netlify reads the same `public/_headers` and `public/_redirects` files. Netlify redirects the bare domain to the primary (`www`) domain automatically.
 
 ## 8. After launch
 
