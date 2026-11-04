@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE, isSet } from '../data/site';
+import { formatDate } from '../lib/i18n';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Disclaimer & Privacy', href: '/disclaimer/' },
+];
+const updated = new Date('2026-11-04');
+---
+<BaseLayout
+  title="Disclaimer and Privacy Notice | R&R Law Associates Lahore"
+  description="Disclaimer and privacy notice for the R&R Law Associates website: general information only, not legal advice, and how we handle details you send us."
+  breadcrumbs={crumbs}
+>
+  <PageHero title="Disclaimer and Privacy Notice" eyebrow="Legal information" crumbs={crumbs}
+    intro={`Please read this page before relying on anything on this website. Last updated ${formatDate(updated)}.`} />
+  <section class="section">
+    <div class="container container--narrow prose">
+      <h2>General information only</h2>
+      <p>This website is published by {SITE.name} ({SITE.legalName}), {SITE.napAddress}. The content is provided for general information about the law in Pakistan and about the firm. It is <strong>not legal advice</strong> and should not be relied on as a substitute for advice from a qualified advocate about your particular circumstances.</p>
+      <p>The law and court practice change, and the right course of action always depends on the facts. Each guide and practice area page shows the date it was last reviewed. We try to keep the information accurate, but we do not guarantee that it is complete or current, and we accept no liability for any loss arising from reliance on it.</p>
+
+      <h2>Not a solicitation</h2>
+      <p>This website has been prepared in accordance with the rules of the Pakistan Bar Council governing the conduct of advocates. It is intended to provide information, not to advertise or solicit work. It does not contain testimonials, ratings, case results or comparisons with other advocates, and nothing on it should be read as a promise or guarantee about the outcome of any matter.</p>
+
+      <h2>No lawyer-client relationship</h2>
+      <p>Visiting this website, reading its content, calling us, sending a WhatsApp message or submitting the consultation form <strong>does not create a lawyer-client relationship</strong>. A lawyer-client relationship begins only when the firm has agreed, in writing, to act for you on a specific matter.</p>
+      <p>Until then, please do not send us confidential or time-sensitive information. Sending information to us before we have agreed to act does not prevent us from acting for another party in the same matter.</p>
+
+      <h2>Privacy notice</h2>
+      <h3>What we collect</h3>
+      <p>When you use the consultation form, we receive the details you enter: your name, phone or WhatsApp number, the type of matter, a brief description and your preferred contact time. When you contact us by phone, WhatsApp or email, we receive the details you choose to share.</p>
+      <h3>How we use it</h3>
+      <p>We use these details only to respond to your enquiry, to check for conflicts of interest and, if you instruct us, to act for you. We do not sell or share your information for marketing.</p>
+      <h3>Third-party services</h3>
+      <ul>
+        <li>The consultation form is processed by <strong>Web3Forms</strong>, which forwards the submission to the firm by email.</li>
+        <li>WhatsApp links open the WhatsApp service, which is operated by Meta under its own privacy policy.</li>
+        <li>The Google Map on our contact pages loads only when you choose to display it. Once loaded, Google may set cookies and collect data under its own privacy policy.</li>
+      </ul>
+      <h3>Cookies and analytics</h3>
+      <p>This website does not set advertising or tracking cookies of its own. <span class="placeholder">[PLACEHOLDER: if you add analytics later, describe it here.]</span></p>
+      <h3>Keeping and deleting information</h3>
+      <p>Enquiries that do not lead to an engagement are deleted after a reasonable period. Client files are kept as required by professional obligations and law. You can ask us to correct or delete enquiry details by contacting the office{isSet(SITE.email) ? <> at <a href={`mailto:${SITE.email}`}>{SITE.email}</a></> : ''} or calling <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>.</p>
+
+      <h2>External links</h2>
+      <p>Links to other websites, such as government departments or courts, are provided for convenience. We are not responsible for their content.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about this notice can be sent to {SITE.name}, {SITE.napAddress}, {SITE.phoneDisplay}. You can also visit our <a href="/contact/">contact page</a>.</p>
+    </div>
+  </section>
+</BaseLayout>

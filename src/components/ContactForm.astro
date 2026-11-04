@@ -1,0 +1,158 @@
+---
+/**
+ * Consultation request form → Web3Forms (https://web3forms.com).
+ * Works without JS (standard POST); with JS it validates inline and submits via fetch.
+ */
+import { SITE, MATTER_TYPES, MATTER_TYPES_UR, whatsappLink } from '../data/site';
+import type { Lang } from '../lib/i18n';
+
+interface Props { lang?: Lang; heading?: string; headingTag?: 'h2' | 'h3'; defaultMatter?: string }
+const { lang = 'en', headingTag = 'h2', defaultMatter } = Astro.props;
+const ur = lang === 'ur';
+const H = headingTag;
+const heading = Astro.props.heading ?? (ur ? 'مشاورت کی درخواست' : 'Request a consultation');
+const matters = ur ? MATTER_TYPES_UR : MATTER_TYPES;
+const L = ur
+  ? {
+      intro: 'فارم بھیجنے کے بعد ہم آپ کے بتائے ہوئے وقت پر فون یا واٹس ایپ پر رابطہ کریں گے۔ حساس تفصیلات ابھی نہ لکھیں۔',
+      name: 'پورا نام', phone: 'فون / واٹس ایپ نمبر', phoneHint: 'مثال: 0300 1234567 یا +44 7700 900123',
+      matter: 'معاملے کی نوعیت', choose: 'منتخب کریں', desc: 'مختصر تفصیل', descHint: 'چند جملوں میں بتائیں کہ کیا ہوا ہے اور کون سی عدالت میں (اگر مقدمہ دائر ہے)۔',
+      time: 'رابطے کا موزوں وقت', times: ['کوئی بھی وقت', 'صبح (10 تا 1)', 'دوپہر (1 تا 5)', 'شام (5 تا 9)'],
+      consent: 'میں سمجھتا/سمجھتی ہوں کہ یہ فارم بھیجنے سے وکیل اور مؤکل کا تعلق قائم نہیں ہوتا۔',
+      submit: 'درخواست بھیجیں', sending: 'بھیجا جا رہا ہے…',
+      ok: 'شکریہ۔ آپ کی درخواست موصول ہو گئی ہے۔ ہم جلد رابطہ کریں گے۔',
+      err: 'معذرت، درخواست نہیں بھیجی جا سکی۔ براہِ کرم دوبارہ کوشش کریں یا واٹس ایپ پر رابطہ کریں۔',
+      unconfigured: 'آن لائن فارم ابھی فعال نہیں ہے۔ براہِ کرم فون یا واٹس ایپ پر رابطہ کریں۔',
+      required: 'یہ خانہ ضروری ہے۔', phoneErr: 'براہِ کرم درست فون نمبر لکھیں (کم از کم 10 ہندسے)۔', short: 'براہِ کرم کچھ مزید تفصیل لکھیں۔',
+      note: 'آپ کی معلومات صرف آپ سے رابطے کے لیے استعمال ہوں گی۔',
+    }
+  : {
+      intro: 'Share a few details and we will call or WhatsApp you at your preferred time. Please do not include confidential documents or sensitive details at this stage.',
+      name: 'Full name', phone: 'Phone / WhatsApp number', phoneHint: 'For example 0300 1234567 or +44 7700 900123',
+      matter: 'Type of matter', choose: 'Please choose', desc: 'Brief description', descHint: 'A few sentences on what has happened and, if a case is already filed, in which court.',
+      time: 'Preferred contact time', times: ['Any time', 'Morning (10 am – 1 pm)', 'Afternoon (1 pm – 5 pm)', 'Evening (5 pm – 9 pm)'],
+      consent: 'I understand that sending this form does not create a lawyer-client relationship.',
+      submit: 'Send request', sending: 'Sending…',
+      ok: 'Thank you. Your request has been received and we will be in touch shortly.',
+      err: 'Sorry, your request could not be sent. Please try again or message us on WhatsApp.',
+      unconfigured: 'The online form is not active yet. Please call or message us on WhatsApp.',
+      required: 'This field is required.', phoneErr: 'Please enter a valid phone number (at least 10 digits).', short: 'Please add a little more detail.',
+      note: 'Your details are used only to respond to your enquiry. See our privacy notice on the disclaimer page.',
+    };
+---
+<form class="form" id="consultation-form" action="https://api.web3forms.com/submit" method="POST" novalidate
+  data-msg-required={L.required} data-msg-phone={L.phoneErr} data-msg-short={L.short} data-msg-ok={L.ok} data-msg-err={L.err}
+  data-msg-unconfigured={L.unconfigured} data-msg-sending={L.sending}>
+  <H id="consultation-form-title">{heading}</H>
+  <p class="form__intro">{L.intro}</p>
+
+  <input type="hidden" name="access_key" value={SITE.web3formsAccessKey} />
+  <input type="hidden" name="subject" value="New consultation request — R&R Law Associates website" />
+  <input type="hidden" name="from_name" value="R&R Law Associates website" />
+  <input type="hidden" name="page" value={Astro.url.pathname} />
+  <div class="hp" aria-hidden="true">
+    <label for="cf-botcheck">Leave this field empty</label>
+    <input type="checkbox" id="cf-botcheck" name="botcheck" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="cf-name">{L.name} <span class="req" aria-hidden="true">*</span></label>
+      <input id="cf-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="cf-name-err" />
+      <p class="field__error" id="cf-name-err" aria-live="polite"></p>
+    </div>
+    <div class="field">
+      <label for="cf-phone">{L.phone} <span class="req" aria-hidden="true">*</span></label>
+      <input id="cf-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="25" dir="ltr" aria-describedby="cf-phone-hint cf-phone-err" />
+      <p class="field__hint" id="cf-phone-hint">{L.phoneHint}</p>
+      <p class="field__error" id="cf-phone-err" aria-live="polite"></p>
+    </div>
+  </div>
+  <div class="field-row">
+    <div class="field">
+      <label for="cf-matter">{L.matter} <span class="req" aria-hidden="true">*</span></label>
+      <select id="cf-matter" name="matter_type" required aria-describedby="cf-matter-err">
+        <option value="">{L.choose}</option>
+        {matters.map((m, i) => <option value={MATTER_TYPES[i]} selected={defaultMatter === MATTER_TYPES[i]}>{m}</option>)}
+      </select>
+      <p class="field__error" id="cf-matter-err" aria-live="polite"></p>
+    </div>
+    <div class="field">
+      <label for="cf-time">{L.time}</label>
+      <select id="cf-time" name="preferred_contact_time">
+        {L.times.map((t) => <option value={t}>{t}</option>)}
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label for="cf-desc">{L.desc} <span class="req" aria-hidden="true">*</span></label>
+    <textarea id="cf-desc" name="message" required minlength="15" maxlength="1500" aria-describedby="cf-desc-hint cf-desc-err"></textarea>
+    <p class="field__hint" id="cf-desc-hint">{L.descHint}</p>
+    <p class="field__error" id="cf-desc-err" aria-live="polite"></p>
+  </div>
+  <div class="field">
+    <label style="display:flex;gap:.6rem;align-items:flex-start;font-weight:400">
+      <input type="checkbox" name="acknowledgement" value="Acknowledged: no lawyer-client relationship" required style="width:20px;min-height:20px;height:20px;margin-top:.3rem;flex:none" aria-describedby="cf-consent-err" />
+      <span>{L.consent}</span>
+    </label>
+    <p class="field__error" id="cf-consent-err" aria-live="polite"></p>
+  </div>
+
+  <button class="btn" type="submit">{L.submit}</button>
+  <p class="form__status" role="status" aria-live="polite" hidden></p>
+  <p class="form__note">{L.note} <a href={whatsappLink(lang)} target="_blank" rel="noopener">{ur ? 'واٹس ایپ پر رابطہ' : 'Prefer WhatsApp? Message us directly'}</a>.</p>
+</form>
+
+<script is:inline>
+  (() => {
+    const form = document.getElementById('consultation-form');
+    if (!form) return;
+    const d = form.dataset;
+    const status = form.querySelector('.form__status');
+    const btn = form.querySelector('button[type="submit"]');
+    const label = btn.textContent;
+
+    const setError = (el, msg) => {
+      const err = document.getElementById(el.getAttribute('aria-describedby').split(' ').pop());
+      el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      if (err) err.textContent = msg || '';
+    };
+    const validate = (el) => {
+      const v = (el.value || '').trim();
+      if (el.type === 'checkbox') { setError(el, el.checked ? '' : d.msgRequired); return el.checked; }
+      if (el.required && !v) { setError(el, d.msgRequired); return false; }
+      if (el.name === 'phone' && v.replace(/\D/g, '').length < 10) { setError(el, d.msgPhone); return false; }
+      if (el.minLength > 0 && v.length < el.minLength) { setError(el, d.msgShort); return false; }
+      setError(el, '');
+      return true;
+    };
+    const fields = [...form.querySelectorAll('[required]')];
+    fields.forEach((el) => el.addEventListener(el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'blur', () => validate(el)));
+
+    const show = (msg, ok) => {
+      status.hidden = false;
+      status.textContent = msg;
+      status.className = 'form__status ' + (ok ? 'form__status--ok' : 'form__status--err');
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const invalid = fields.filter((el) => !validate(el));
+      if (invalid.length) { invalid[0].focus(); return; }
+      if (form.botcheck.checked) return; // honeypot
+      if (/ACCESS_KEY|PLACEHOLDER/.test(form.access_key.value)) { show(d.msgUnconfigured, false); return; }
+      btn.disabled = true; btn.textContent = d.msgSending;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.success) { form.reset(); show(d.msgOk, true); }
+        else show(d.msgErr, false);
+      } catch { show(d.msgErr, false); }
+      finally { btn.disabled = false; btn.textContent = label; status.focus?.(); }
+    });
+  })();
+</script>

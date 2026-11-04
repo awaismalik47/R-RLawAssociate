@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTASection from '../components/CTASection.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import { SITE } from '../data/site';
+import { faqPage } from '../lib/schema';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'FAQ', href: '/faq/' },
+];
+const groups = [
+  {
+    id: 'working-with-us', title: 'Working with us',
+    faqs: [
+      { q: 'Where is your office?', a: `${SITE.name}, ${SITE.napAddress}. The office is on Turner Road in Mozang Chungi, a short distance from the Lahore High Court. See <a href="/contact/#directions">directions to our office</a>.` },
+      { q: 'What are your office hours?', a: `${SITE.hours.display}. ${SITE.hours.closedNote}. Please book an appointment before visiting.` },
+      { q: 'Can I consult by phone or video?', a: 'Yes. Consultations can be arranged by phone, WhatsApp call or video, which is often convenient for clients outside Lahore or abroad.' },
+      { q: 'Which languages do you work in?', a: 'We advise in English, Urdu and Punjabi. Court documents are prepared in English or Urdu as the court requires.' },
+      { q: 'What should I bring to the first meeting?', a: 'Your CNIC, copies of every document relating to the matter (notices, orders, agreements, FIRs, title documents), and a short written timeline of what has happened. Keep the originals safe and bring copies.' },
+    ],
+  },
+  {
+    id: 'fees', title: 'Fees and engagement',
+    faqs: [
+      { q: 'How are fees decided?', a: 'Fees depend on the type of matter, the court, the stage the case has reached, urgency and how much work is likely. We explain the fee and what it covers in writing before you instruct us. Read more about <a href="/process/">our process and fees</a>.' },
+      { q: 'Can you tell me whether I will win?', a: 'No advocate can honestly guarantee the result of a case. We will give you a frank assessment of the strengths and weaknesses of your position and the risks involved, so that you can make an informed decision.' },
+      { q: 'Does contacting you through the website make you my lawyer?', a: 'No. Sending a message or the consultation form does not create a lawyer-client relationship. That relationship begins only when we have agreed in writing to act for you. See our <a href="/disclaimer/">disclaimer</a>.' },
+    ],
+  },
+  {
+    id: 'courts', title: 'Courts and cases',
+    faqs: [
+      { q: 'Which courts do you appear in?', a: 'We appear before the Lahore High Court and the district courts of Lahore, including Family Courts, Civil Courts, Magistrates and Sessions Courts, Banking Courts, and tribunals such as the Service Tribunal, depending on the matter.' },
+      { q: 'How long will my case take?', a: 'It depends on the type of case, the court\'s workload and whether the other side contests. Each of our practice area pages gives a typical timeline, but we will not promise a fixed date. We will keep you informed after every hearing.' },
+      { q: 'Can you take over a case that another lawyer started?', a: 'Yes. With your consent, we obtain the file and a no-objection from the previous counsel where required, review the record and file our power of attorney (wakalatnama) in the court.' },
+      { q: 'What is a wakalatnama?', a: 'A wakalatnama is the document by which you authorise an advocate to appear for you in a particular case. It is signed by you and the advocate and filed in the court.' },
+    ],
+  },
+  {
+    id: 'overseas', title: 'Overseas clients',
+    faqs: [
+      { q: 'Can you handle my case if I live abroad?', a: 'Many matters can be handled through a special power of attorney attested at a Pakistani embassy or consulate, with consultations over WhatsApp or video. See our page for <a href="/overseas-pakistanis/">overseas Pakistanis</a>.' },
+      { q: 'How will I receive updates?', a: 'We send updates after each hearing by WhatsApp or email, with copies of important orders.' },
+    ],
+  },
+];
+const all = groups.flatMap((g) => g.faqs);
+---
+<BaseLayout
+  title="Frequently Asked Questions | R&R Law Associates Lahore"
+  description="Answers to common questions about our Lahore law office: appointments, fees, courts, timelines and help for overseas clients. Read the FAQ or call us."
+  breadcrumbs={crumbs}
+  jsonLd={[faqPage(all)]}
+>
+  <PageHero
+    title="Frequently Asked Questions"
+    eyebrow="FAQ"
+    intro="Answers to the questions clients ask us most often. For questions about a particular area of law, see the practice area pages and legal guides."
+    crumbs={crumbs}
+  />
+  <section class="section">
+    <div class="container container--narrow">
+      <nav class="toc" aria-labelledby="faq-topics">
+        <h2 id="faq-topics">Topics</h2>
+        <ol>{groups.map((g) => <li><a href={`#${g.id}`}>{g.title}</a></li>)}</ol>
+      </nav>
+      {groups.map((g) => (
+        <>
+          <h2 id={g.id} class="mt-3">{g.title}</h2>
+          <FAQAccordion faqs={g.faqs} />
+        </>
+      ))}
+      <p class="mt-3">Questions about a specific area? See <a href="/practice-areas/family-lawyer-lahore/">family law</a>, <a href="/practice-areas/criminal-lawyer-lahore/">criminal law and bail</a>, <a href="/practice-areas/property-lawyer-lahore/">property and inheritance</a> or <a href="/guides/">our legal guides</a>.</p>
+    </div>
+  </section>
+  <CTASection />
+</BaseLayout>

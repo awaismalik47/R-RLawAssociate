@@ -1,0 +1,7 @@
+---
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+---
+<div class={`pillar-divider ${cls}`} aria-hidden="true">
+  <svg viewBox="0 0 22 30" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 2h20M3 5h16M5 8h12v3H5zM7 13v12M10 13v12M13 13v12M16 13v12M4 26h14M2 29h18" /></svg>
+</div>

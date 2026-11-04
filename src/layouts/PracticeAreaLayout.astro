@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import { getEntries, getEntry, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import CTASection from '../components/CTASection.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, whatsappLink } from '../data/site';
+import { service, faqPage } from '../lib/schema';
+import { formatDate } from '../lib/i18n';
+
+interface Props { entry: CollectionEntry<'practiceAreas'> }
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const related = await getEntries(d.related);
+const guide = d.guide ? await getEntry(d.guide) : undefined;
+const url = `/practice-areas/${entry.id}/`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Practice Areas', href: '/practice-areas/' },
+  { name: d.label, href: url },
+];
+---
+<BaseLayout
+  title={d.seoTitle}
+  description={d.description}
+  breadcrumbs={crumbs}
+  jsonLd={[service({ name: d.title, serviceType: d.serviceType, description: d.description, url }), faqPage(d.faqs)]}
+>
+  <PageHero title={d.title} eyebrow={d.label} intro={d.intro} crumbs={crumbs}>
+    <div class="btn-row" style="margin-top:1.75rem">
+      <a class="btn btn--gold" href="/contact/#consultation">Book a Consultation</a>
+      <a class="btn btn--outline-light" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp Us</a>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container with-sidebar">
+      <article>
+        <figure class="frame-wrap" style="margin:0 0 3rem">
+          <div class="frame">
+            <Image src={d.image} alt={d.imageAlt} widths={[480, 760, 1000, 1280]} sizes="(min-width: 1024px) 760px, 92vw" loading="lazy" />
+          </div>
+        </figure>
+        <div class="prose">
+          <Content />
+          <h2 id="faqs">Frequently asked questions</h2>
+        </div>
+        <FAQAccordion faqs={d.faqs} openFirst />
+        <p class="notice mt-2">
+          This page explains the law in general terms and is not legal advice about your situation. Laws and court practice change; please
+          <a href="/contact/">speak to an advocate at our Lahore office</a> before acting. Last reviewed <time datetime={d.updated.toISOString().slice(0, 10)}>{formatDate(d.updated)}</time>.
+        </p>
+      </article>
+
+      <aside class="sidebar" aria-label="Contact and related pages">
+        <div class="sidebar-box sidebar-box--navy">
+          <h2>Speak to an advocate</h2>
+          <p>Our office is on Turner Road, Mozang Chungi, a short walk from Lahore High Court.</p>
+          <a class="btn btn--gold" href={SITE.phoneHref}><Icon name="phone" />Call {SITE.phoneDisplay}</a>
+          <a class="btn btn--outline-light" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
+          <a class="btn btn--outline-light" href="/contact/#consultation">Book a Consultation</a>
+        </div>
+        <nav class="sidebar-box" aria-labelledby="related-areas">
+          <h2 id="related-areas">Related practice areas</h2>
+          <ul>
+            {related.map((r) => <li><a href={`/practice-areas/${r.id}/`}>{r.data.label}</a></li>)}
+            <li><a href="/practice-areas/">All practice areas</a></li>
+          </ul>
+        </nav>
+        {guide && (
+          <div class="sidebar-box">
+            <h2>Legal guide</h2>
+            <p>{guide.data.excerpt}</p>
+            <a class="text-link" href={`/guides/${guide.id}/`}>{guide.data.title}</a>
+          </div>
+        )}
+      </aside>
+    </div>
+  </section>
+
+  <CTASection heading={`Discuss your ${d.label.toLowerCase()} matter`} />
+</BaseLayout>

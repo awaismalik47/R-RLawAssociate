@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import AdvocateCard from '../../components/AdvocateCard.astro';
+import PrincipalAdvocate from '../../components/PrincipalAdvocate.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const advocates = (await getCollection('advocates')).sort((a, b) => a.data.order - b.data.order);
+const principal = advocates.find((a) => a.data.role === 'principal');
+const associates = advocates.filter((a) => a !== principal);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Our Advocates', href: '/advocates/' },
+];
+---
+<BaseLayout
+  title="Our Advocates in Mozang Chungi, Lahore | R&R Law Associates"
+  description="Meet the advocates of R&R Law Associates in Mozang Chungi, Lahore: enrolment, education, bar memberships and the areas of law each one practises in."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    title="Our Advocates"
+    eyebrow="The people behind the firm"
+    intro="R&R Law Associates is led by its advocates, who appear before the courts of Lahore and the Lahore High Court. The advocate who meets you at the first consultation is the one responsible for your matter."
+    crumbs={crumbs}
+  />
+  {principal && (
+    <section class="section">
+      <div class="container">
+        <PrincipalAdvocate entry={principal} />
+      </div>
+    </section>
+  )}
+  {associates.length > 0 && (
+    <section class="section section--stone">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">{principal ? 'Associates' : 'Our team'}</p>
+          <h2>{principal ? 'Associate advocates' : 'Our advocates'}</h2>
+          <span class="rule"></span>
+        </div>
+        <div class="grid grid--3">
+          {associates.map((a) => (
+            <AdvocateCard href={`/advocates/${a.id}/`} name={a.data.name} jobTitle={a.data.jobTitle} enrolment={a.data.enrolment} focus={a.data.knowsAbout.join(' · ')} image={a.data.image} imageAlt={a.data.imageAlt} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+  <section class="section section--tight">
+    <div class="container container--narrow">
+      <p class="notice">In line with the rules of the Pakistan Bar Council, these profiles state qualifications and areas of practice only. They do not describe case results or compare our advocates with others.</p>
+    </div>
+  </section>
+  <CTASection />
+</BaseLayout>

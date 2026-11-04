@@ -1,0 +1,11 @@
+---
+import Icon from './Icon.astro';
+interface Props { href: string; title: string; summary: string; icon: string; linkText?: string; hreflang?: string }
+const { href, title, summary, icon, linkText = 'Read more', hreflang } = Astro.props;
+---
+<article class="card reveal">
+  <Icon name={icon} class="card__icon" />
+  <h3><a class="card__link" href={href} hreflang={hreflang}>{title}</a></h3>
+  <p>{summary}</p>
+  <span class="text-link" aria-hidden="true">{linkText}</span>
+</article>

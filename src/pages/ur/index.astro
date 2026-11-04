@@ -1,0 +1,137 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import Pillar from '../../components/Pillar.astro';
+import PillarDivider from '../../components/PillarDivider.astro';
+import PracticeCard from '../../components/PracticeCard.astro';
+import FAQAccordion from '../../components/FAQAccordion.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import ContactDetails from '../../components/ContactDetails.astro';
+import MapEmbed from '../../components/MapEmbed.astro';
+import { SITE, whatsappLink } from '../../data/site';
+import { PRACTICE_UR } from '../../data/ur';
+import { legalService, faqPage } from '../../lib/schema';
+import { heroSources } from '../../lib/hero';
+import heroImg from '../../assets/images/rr-law-associates-advocate-at-desk-lahore.jpg';
+import aboutImg from '../../assets/images/rr-law-associates-advocates-chamber-lahore.jpg';
+
+const areas = (await getCollection('practiceAreas')).sort((a, b) => a.data.order - b.data.order);
+const hero = await heroSources(heroImg);
+const faqs = [
+  { q: 'آپ کا دفتر کہاں ہے؟', a: `ہمارا دفتر ${SITE.napAddressUr} میں ہے، جو لاہور ہائی کورٹ کے قریب ٹرنر روڈ، مزنگ چونگی پر واقع ہے۔` },
+  { q: 'کیا ملاقات کے لیے پہلے وقت لینا ضروری ہے؟', a: 'جی ہاں۔ براہِ کرم فون، واٹس ایپ یا فارم کے ذریعے پہلے وقت لے لیں تاکہ وکیل دستیاب ہوں اور آپ کی دستاویزات دیکھ سکیں۔' },
+  { q: 'آپ کی فیس کیسے طے ہوتی ہے؟', a: 'فیس مقدمے کی نوعیت، عدالت، فوری ضرورت اور کام کی مقدار پر منحصر ہے۔ کام شروع کرنے سے پہلے ہم فیس اور اس میں شامل کام تحریری طور پر بتاتے ہیں۔' },
+  { q: 'کیا بیرونِ ملک رہتے ہوئے مقدمہ چلایا جا سکتا ہے؟', a: 'جی ہاں۔ بہت سے معاملات پاکستانی سفارت خانے سے تصدیق شدہ مختار نامے کے ذریعے چلائے جا سکتے ہیں، اور مشاورت واٹس ایپ یا ویڈیو کال پر ہو سکتی ہے۔' },
+  { q: 'کیا میری معلومات خفیہ رہیں گی؟', a: 'جی ہاں۔ مشاورت میں بتائی گئی باتیں راز میں رکھی جاتی ہیں۔ براہِ کرم ویب سائٹ فارم پر حساس دستاویزات نہ بھیجیں۔' },
+  { q: 'کیا آپ مقدمہ جیتنے کی ضمانت دیتے ہیں؟', a: 'کوئی وکیل دیانت داری سے کسی مقدمے کے نتیجے کی ضمانت نہیں دے سکتا۔ ہم آپ کو آپ کے مقدمے کی مضبوطی اور خطرات کے بارے میں صاف صاف بتاتے ہیں۔' },
+];
+const steps = [
+  { t: 'رابطہ', d: 'فون، واٹس ایپ یا فارم کے ذریعے اپنے معاملے کی مختصر تفصیل بتائیں۔' },
+  { t: 'مشاورت', d: 'دفتر میں یا ویڈیو کال پر وکیل سے ملاقات، دستاویزات کا جائزہ اور آسان زبان میں قانونی راستوں کی وضاحت۔' },
+  { t: 'حکمتِ عملی اور دستاویزات', d: 'تحریری طور پر فیس اور لائحہ عمل طے کرنا، پھر درخواست یا دعویٰ تیار کرنا۔' },
+  { t: 'عدالت میں نمائندگی', d: 'ہر پیشی پر حاضری اور ہر سماعت کے بعد آپ کو صورتِ حال سے آگاہ رکھنا۔' },
+];
+---
+<BaseLayout
+  lang="ur"
+  title="لاہور میں وکلاء، ہائی کورٹ کے قریب | R&R Law Associates"
+  description="آر اینڈ آر لاء ایسوسی ایٹس، مزنگ چونگی لاہور: عائلی، فوجداری، دیوانی، جائیداد اور رِٹ مقدمات میں قانونی مشاورت۔ مشاورت کا وقت لیں۔"
+  jsonLd={[legalService('ur'), faqPage(faqs)]}
+  preload={{ srcset: hero.avifSrcset, sizes: hero.sizes, type: 'image/avif' }}
+>
+  <section class="hero">
+    <picture class="hero__media">
+      <source type="image/avif" srcset={hero.avifSrcset} sizes={hero.sizes} />
+      <source type="image/webp" srcset={hero.webpSrcset} sizes={hero.sizes} />
+      <img src={hero.fallback} width={hero.width} height={hero.height} alt="لاہور ہائی کورٹ کے قریب آر اینڈ آر لاء ایسوسی ایٹس کے چیمبر میں میز پر کام کرتے ہوئے وکیل" fetchpriority="high" loading="eager" decoding="async" />
+    </picture>
+    <Pillar class="hero__watermark" />
+    <div class="container">
+      <div class="hero__content">
+        <p class="eyebrow">وکلاء · لاہور ہائی کورٹ</p>
+        <h1>لاہور میں قانونی فرم — ہائی کورٹ کے قریب مقدمات اور قانونی مشاورت</h1>
+        <p class="hero__sub">عائلی، فوجداری، دیوانی، جائیداد اور آئینی معاملات پر واضح اور عملی مشورہ، مزنگ چونگی میں لاہور ہائی کورٹ کے قریب۔</p>
+        <div class="btn-row">
+          <a class="btn btn--gold" href="/ur/contact/#consultation">مشاورت کا وقت لیں</a>
+          <a class="btn btn--outline-light" href={whatsappLink('ur')} target="_blank" rel="noopener"><Icon name="whatsapp" />واٹس ایپ پر رابطہ</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="practice-areas">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">شعبہ جات</p>
+        <h2>افراد، خاندانوں اور کاروبار کے لیے قانونی معاونت</h2>
+        <span class="rule"></span>
+        <p>ہم پاکستانی قانون کے اہم شعبوں میں مقدمات اور مشاورت کا کام کرتے ہیں۔ تفصیلی صفحات انگریزی میں ہیں۔</p>
+      </div>
+      <div class="grid grid--3">
+        {areas.map((a) => <PracticeCard href={`/practice-areas/${a.id}/`} hreflang="en" title={PRACTICE_UR[a.id]?.label ?? a.data.label} summary={PRACTICE_UR[a.id]?.summary ?? a.data.summary} icon={a.data.icon} linkText="تفصیل (انگریزی)" />)}
+      </div>
+      <p class="mt-2"><a class="text-link" href="/ur/practice-areas/">تمام شعبہ جات کا خلاصہ</a></p>
+    </div>
+  </section>
+
+  <section class="section section--stone">
+    <div class="container split">
+      <div class="frame-wrap reveal">
+        <div class="frame">
+          <Image src={aboutImg} alt="مزنگ چونگی لاہور میں آر اینڈ آر لاء ایسوسی ایٹس کا لکڑی کے پینل والا چیمبر" widths={[480, 760, 1000]} sizes="(min-width: 900px) 560px, 92vw" loading="lazy" />
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="eyebrow">ہمارے بارے میں</p>
+        <h2>مزنگ چونگی میں، ہائی کورٹ سے چند منٹ کے فاصلے پر</h2>
+        <span class="rule"></span>
+        <p>آر اینڈ آر لاء ایسوسی ایٹس (رضا اینڈ رضا لاء ایسوسی ایٹس) لاہور کی ایک قانونی فرم ہے جو ٹرنر روڈ پر صدیقی پلازہ سے کام کرتی ہے۔ ہمارا مقام لاہور ہائی کورٹ اور ضلعی عدالتوں تک جلد پہنچنے میں مدد دیتا ہے۔</p>
+        <p>ہم سمجھتے ہیں کہ مؤکل کو اپنا مقدمہ سمجھ آنا چاہیے۔ ہم قانون آسان زبان میں سمجھاتے ہیں، فیس تحریری طور پر طے کرتے ہیں اور ہر پیشی کے بعد آپ کو آگاہ رکھتے ہیں۔</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--navy">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">طریقۂ کار</p>
+        <h2>پہلے رابطے سے عدالت تک</h2>
+        <span class="rule"></span>
+      </div>
+      <ol class="steps">
+        {steps.map((s) => <li class="reveal"><h3>{s.t}</h3><p>{s.d}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">سوالات</p>
+        <h2>اکثر پوچھے جانے والے سوالات</h2>
+        <span class="rule"></span>
+      </div>
+      <FAQAccordion faqs={faqs} center />
+    </div>
+  </section>
+
+  <section class="section section--stone" id="contact">
+    <div class="container">
+      <PillarDivider />
+      <div class="section-head section-head--center mt-2">
+        <p class="eyebrow">رابطہ</p>
+        <h2>دفتر تشریف لائیں یا مشاورت کی درخواست بھیجیں</h2>
+        <span class="rule"></span>
+      </div>
+      <div class="contact-grid">
+        <div>
+          <ContactDetails lang="ur" />
+          <MapEmbed lang="ur" />
+        </div>
+        <ContactForm lang="ur" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

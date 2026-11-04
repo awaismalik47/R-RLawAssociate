@@ -1,0 +1,18 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import Pillar from './Pillar.astro';
+import type { Crumb } from '../lib/schema';
+import type { Lang } from '../lib/i18n';
+interface Props { title: string; eyebrow?: string; intro?: string; crumbs: Crumb[]; lang?: Lang }
+const { title, eyebrow, intro, crumbs, lang = 'en' } = Astro.props;
+---
+<section class="page-hero">
+  <Pillar class="page-hero__watermark" />
+  <div class="container">
+    <Breadcrumbs items={crumbs} lang={lang} />
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1>{title}</h1>
+    {intro && <p class="page-hero__intro">{intro}</p>}
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,17 @@
+---
+/** Click-to-load Google Map: nothing from Google loads until the visitor asks for it. */
+import Icon from './Icon.astro';
+import { SITE, mapEmbedSrc, mapLink } from '../data/site';
+import type { Lang } from '../lib/i18n';
+interface Props { lang?: Lang }
+const ur = Astro.props.lang === 'ur';
+const title = `Map showing ${SITE.name}, ${SITE.napAddress}`;
+---
+<div class="map" data-src={mapEmbedSrc()} data-title={title}>
+  <div class="map__placeholder">
+    <Icon name="pin" />
+    <p>{ur ? 'نقشہ دیکھنے کے لیے بٹن دبائیں (گوگل میپس لوڈ ہو گا)' : 'Google Maps loads only when you ask for it.'}</p>
+    <button class="btn btn--gold" type="button" data-map-load>{ur ? 'نقشہ دکھائیں' : 'Show map'}</button>
+    <a href={mapLink()} target="_blank" rel="noopener">{ur ? 'گوگل میپس میں کھولیں' : 'Open in Google Maps'}</a>
+  </div>
+</div>

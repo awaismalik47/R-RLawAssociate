@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import ContactForm from '../../../components/ContactForm.astro';
+import ContactDetails from '../../../components/ContactDetails.astro';
+import MapEmbed from '../../../components/MapEmbed.astro';
+import Icon from '../../../components/Icon.astro';
+import { SITE, whatsappLink } from '../../../data/site';
+import { legalService } from '../../../lib/schema';
+
+const crumbs = [
+  { name: 'صفحۂ اول', href: '/ur/' },
+  { name: 'رابطہ', href: '/ur/contact/' },
+];
+---
+<BaseLayout
+  lang="ur"
+  title="رابطہ، آر اینڈ آر لاء ایسوسی ایٹس لاہور | R&R Law Associates"
+  description="آر اینڈ آر لاء ایسوسی ایٹس، صدیقی پلازہ، 7 ٹرنر روڈ، مزنگ چونگی لاہور سے رابطہ کریں: فون، واٹس ایپ یا آن لائن فارم کے ذریعے مشاورت کا وقت لیں۔"
+  breadcrumbs={crumbs}
+  jsonLd={[legalService('ur')]}
+>
+  <PageHero lang="ur" title="آر اینڈ آر لاء ایسوسی ایٹس سے رابطہ" eyebrow="رابطہ"
+    intro="مزنگ چونگی میں ہمارے دفتر تشریف لائیں، فون یا واٹس ایپ کریں، یا مشاورت کا فارم بھیجیں۔ براہِ کرم آنے سے پہلے وقت لے لیں۔"
+    crumbs={crumbs}>
+    <div class="btn-row" style="margin-top:1.75rem">
+      <a class="btn btn--gold" href={SITE.phoneHref}><Icon name="phone" /><span class="ltr">{SITE.phoneDisplay}</span></a>
+      <a class="btn btn--outline-light" href={whatsappLink('ur')} target="_blank" rel="noopener"><Icon name="whatsapp" />واٹس ایپ پر رابطہ</a>
+    </div>
+  </PageHero>
+
+  <section class="section" id="consultation">
+    <div class="container contact-grid">
+      <div>
+        <h2>دفتر کی تفصیل</h2>
+        <span class="rule"></span>
+        <ContactDetails lang="ur" />
+      </div>
+      <ContactForm lang="ur" />
+    </div>
+  </section>
+
+  <section class="section section--stone" id="directions">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">دفتر کا راستہ</p>
+        <h2>مزنگ چونگی میں ہمارے دفتر تک کیسے پہنچیں</h2>
+        <span class="rule"></span>
+        <p>ہمارا دفتر صدیقی پلازہ، 7 ٹرنر روڈ، مزنگ چونگی کی پہلی منزل پر ہے۔ ٹرنر روڈ مزنگ چونگی اور لوئر مال کے درمیان، لاہور ہائی کورٹ اور سول سیکرٹریٹ کے قریب ہے۔</p>
+      </div>
+      <div class="directions grid grid--3">
+        <article><h3>لاہور ہائی کورٹ سے</h3><p>ہائی کورٹ سے مال روڈ پر جی پی او چوک کی طرف آئیں، پھر لوئر مال سے مزنگ کی جانب جائیں اور ٹرنر روڈ پر مڑ جائیں۔ صدیقی پلازہ ٹرنر روڈ پر ہے؛ دفتر پہلی منزل پر ہے۔</p></article>
+        <article><h3>جی پی او چوک سے</h3><p>جی پی او چوک سے لوئر مال کے راستے مزنگ کی طرف چلیں، ٹرنر روڈ پر مڑیں اور مزنگ چونگی کی جانب صدیقی پلازہ تک آئیں۔</p></article>
+        <article><h3>مال روڈ سے</h3><p>ریگل چوک سے کوئنز روڈ یا مزنگ روڈ کے راستے مزنگ چونگی آئیں اور وہاں سے ٹرنر روڈ پر مڑ جائیں۔ سڑک پر پارکنگ محدود ہے، اس لیے رکشہ یا رائیڈ سروس آسان رہتی ہے۔</p></article>
+      </div>
+      <p class="notice mt-2">راستہ نہ ملے تو <a href={SITE.phoneHref} class="ltr">{SITE.phoneDisplay}</a> پر کال کریں، ہم رہنمائی کریں گے۔</p>
+      <div class="mt-2"><h3>نقشہ</h3><MapEmbed lang="ur" /></div>
+    </div>
+  </section>
+</BaseLayout>

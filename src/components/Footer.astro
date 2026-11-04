@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import logo from '../assets/brand/rr-law-associates-logo-light.png';
+import Icon from './Icon.astro';
+import { SITE, isSet, whatsappLink } from '../data/site';
+import { T, type Lang } from '../lib/i18n';
+
+interface Props { lang?: Lang }
+const { lang = 'en' } = Astro.props;
+const t = T[lang];
+const areas = (await getCollection('practiceAreas')).sort((a, b) => a.data.order - b.data.order);
+const year = new Date().getFullYear();
+const social = [
+  ['facebook', SITE.social.facebook, 'Facebook'],
+  ['instagram', SITE.social.instagram, 'Instagram'],
+  ['linkedin', SITE.social.linkedin, 'LinkedIn'],
+].filter(([, url]) => isSet(url));
+const ur = lang === 'ur';
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <Image src={logo} alt="R&R Law Associates (Raza & Raza Law Associates) logo" width={300} height={234} loading="lazy" />
+        <p>
+          {ur
+            ? 'لاہور ہائی کورٹ کے قریب مزنگ چونگی میں واقع وکلاء کا دفتر، جو لاہور اور پنجاب میں دیوانی، فوجداری، عائلی اور آئینی معاملات میں قانونی معاونت فراہم کرتا ہے۔'
+            : 'Advocates practising from Mozang Chungi, a short walk from Lahore High Court, assisting clients in civil, criminal, family, property and constitutional matters across Lahore and Punjab.'}
+        </p>
+        {social.length > 0 && (
+          <div class="footer-social">
+            {social.map(([name, url, label]) => <a href={url} rel="noopener" target="_blank" aria-label={`${SITE.name} on ${label}`}><Icon name={name} /></a>)}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h2 class="footer-title">{ur ? 'شعبہ جات (انگریزی)' : 'Practice areas'}</h2>
+        <ul>
+          {areas.map((a) => <li><a href={`/practice-areas/${a.id}/`} hreflang={ur ? 'en' : undefined}>{a.data.label}</a></li>)}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer-title">{ur ? 'فرم' : 'The firm'}</h2>
+        <ul>
+          {ur ? (
+            <>
+              <li><a href="/ur/">صفحۂ اول</a></li>
+              <li><a href="/ur/practice-areas/">شعبہ جات</a></li>
+              <li><a href="/ur/contact/">رابطہ</a></li>
+              <li><a href="/" hreflang="en" lang="en">English website</a></li>
+            </>
+          ) : (
+            <>
+              <li><a href="/about/">About the firm</a></li>
+              <li><a href="/advocates/">Our advocates</a></li>
+              <li><a href="/process/">Our process and fees</a></li>
+              <li><a href="/overseas-pakistanis/">Overseas Pakistanis</a></li>
+              <li><a href="/guides/">Legal guides</a></li>
+              <li><a href="/faq/">Frequently asked questions</a></li>
+              <li><a href="/contact/">Contact and directions</a></li>
+              <li><a href="/ur/" hreflang="ur" lang="ur">اردو</a></li>
+            </>
+          )}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer-title">{ur ? 'دفتر' : 'Office'}</h2>
+        <address class="footer-nap">
+          <strong lang="en">{SITE.name}</strong><br />
+          <span lang="en" class={ur ? 'ltr' : undefined}>{SITE.napAddress}</span><br />
+          <a href={SITE.phoneHref} class={ur ? 'ltr' : undefined}>{SITE.phoneDisplay}</a>
+        </address>
+        <p class="mt-2" style="margin-top:1rem">
+          <span>{ur ? SITE.hours.displayUr : SITE.hours.display}</span><br />
+          <span>{ur ? SITE.hours.closedNoteUr : SITE.hours.closedNote}</span>
+        </p>
+        <ul>
+          <li><a href={whatsappLink(lang)} rel="noopener" target="_blank">{ur ? 'واٹس ایپ پر پیغام بھیجیں' : 'Message us on WhatsApp'}</a></li>
+          {isSet(SITE.email) && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-disclaimer">{t.footerDisclaimer} <a href="/disclaimer/" hreflang={ur ? 'en' : undefined}>{t.readDisclaimer}</a>.</p>
+      <p style="margin:0">© {year} <span lang="en">{SITE.name}</span> ({SITE.legalName}). {ur ? 'جملہ حقوق محفوظ ہیں۔' : 'All rights reserved.'}</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,19 @@
+# [PLACEHOLDER] Replace rrlawassociates.com with the live domain.
+# Force the www host over HTTPS (Cloudflare Pages also redirects http → https automatically).
+https://rrlawassociates.com/*   https://www.rrlawassociates.com/:splat   301!
+http://rrlawassociates.com/*    https://www.rrlawassociates.com/:splat   301!
+http://www.rrlawassociates.com/* https://www.rrlawassociates.com/:splat  301!
+
+# Old or common alternative URLs
+/home        /                 301
+/index.html  /                 301
+/about-us    /about/           301
+/contact-us  /contact/         301
+/lawyers     /advocates/       301
+/team        /advocates/       301
+/services    /practice-areas/  301
+/blog        /guides/          301
+/privacy     /disclaimer/      301
+/urdu        /ur/              301
+
+# Trailing slash: Cloudflare Pages and Netlify (with "Pretty URLs") serve /page/ for /page automatically.

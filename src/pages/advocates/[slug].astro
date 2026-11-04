@@ -1,0 +1,96 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { getCollection, getEntries, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CTASection from '../../components/CTASection.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import Icon from '../../components/Icon.astro';
+import { SITE, abs, whatsappLink } from '../../data/site';
+import { person } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('advocates');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const focus = await getEntries(d.focus);
+const guides = (await getCollection('guides')).filter((g) => g.data.author.id === entry.id);
+const url = `/advocates/${entry.id}/`;
+const photo = await getImage({ src: d.image, width: 800, format: 'jpeg' });
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Our Advocates', href: '/advocates/' },
+  { name: d.name, href: url },
+];
+const jsonLd = [
+  person({
+    name: d.name, url, image: abs(photo.src), jobTitle: d.jobTitle, alumniOf: d.alumniOf,
+    knowsAbout: d.knowsAbout, sameAs: d.sameAs, description: d.description,
+  }),
+];
+---
+<BaseLayout title={d.seoTitle} description={d.description} breadcrumbs={crumbs} jsonLd={jsonLd} type="profile" image={photo.src} imageAlt={d.imageAlt}>
+  <PageHero title={d.name} eyebrow={d.jobTitle} intro={d.enrolment} crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container with-sidebar">
+      <article>
+        <div class="split">
+          <div class="frame-wrap">
+            <div class="frame">
+              <Image src={d.image} alt={d.imageAlt} widths={[360, 560, 800]} sizes="(min-width: 900px) 380px, 92vw" loading="eager" />
+            </div>
+          </div>
+          <div class="prose">
+            <h2>Profile</h2>
+            <Content />
+          </div>
+        </div>
+
+        <h2 class="mt-3">Qualifications and memberships</h2>
+        <dl class="dl">
+          <div><dt>Enrolment</dt><dd>{d.enrolment}</dd></div>
+          <div><dt>Years of practice</dt><dd>{d.yearsOfPractice}</dd></div>
+          <div><dt>Education</dt><dd>{d.education.join('; ')}</dd></div>
+          <div><dt>Bar memberships</dt><dd>{d.barMemberships.join('; ')}</dd></div>
+        </dl>
+
+        <h2 class="mt-3">Areas of practice</h2>
+        <ul class="check-list">
+          {focus.map((f) => <li><a href={`/practice-areas/${f.id}/`}>{f.data.title}</a></li>)}
+        </ul>
+
+        {guides.length > 0 && (
+          <>
+            <h2 class="mt-3">Legal guides by {d.name}</h2>
+            <div class="grid grid--2">
+              {guides.map((g) => <GuideCard href={`/guides/${g.id}/`} title={g.data.title} excerpt={g.data.excerpt} image={g.data.image} imageAlt={g.data.imageAlt} updated={g.data.updated} />)}
+            </div>
+          </>
+        )}
+      </article>
+
+      <aside class="sidebar" aria-label="Contact">
+        <div class="sidebar-box sidebar-box--navy">
+          <h2>Arrange a meeting</h2>
+          <p>Consultations take place at our office in Siddiqi Plaza, Turner Road, Mozang Chungi, or by phone and video.</p>
+          <a class="btn btn--gold" href={SITE.phoneHref}><Icon name="phone" />Call {SITE.phoneDisplay}</a>
+          <a class="btn btn--outline-light" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
+          <a class="btn btn--outline-light" href="/contact/#consultation">Book a Consultation</a>
+        </div>
+        <nav class="sidebar-box" aria-labelledby="other-advocates">
+          <h2 id="other-advocates">More about the firm</h2>
+          <ul>
+            <li><a href="/advocates/">All advocates</a></li>
+            <li><a href="/about/">About R&amp;R Law Associates</a></li>
+            <li><a href="/process/">Our process and fees</a></li>
+          </ul>
+        </nav>
+      </aside>
+    </div>
+  </section>
+  <CTASection />
+</BaseLayout>

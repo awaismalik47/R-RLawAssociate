@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import PracticeCard from '../../../components/PracticeCard.astro';
+import CTASection from '../../../components/CTASection.astro';
+import { PRACTICE_UR } from '../../../data/ur';
+
+const areas = (await getCollection('practiceAreas')).sort((a, b) => a.data.order - b.data.order);
+const crumbs = [
+  { name: 'صفحۂ اول', href: '/ur/' },
+  { name: 'شعبہ جات', href: '/ur/practice-areas/' },
+];
+---
+<BaseLayout
+  lang="ur"
+  title="ہمارے شعبہ جات، لاہور کے وکلاء | R&R Law Associates"
+  description="عائلی، فوجداری، دیوانی، جائیداد، رِٹ، کارپوریٹ، بینکنگ، ٹیکس اور سروس معاملات: لاہور میں ہمارے وکلاء کے شعبہ جات کا مختصر تعارف۔"
+  breadcrumbs={crumbs}
+>
+  <PageHero lang="ur" title="ہمارے شعبہ جات" eyebrow="ہم کیا کرتے ہیں"
+    intro="ہمارے وکلاء لاہور کی عدالتوں اور لاہور ہائی کورٹ میں مقدمات اور قانونی مشاورت کا کام کرتے ہیں۔ ذیل میں ہر شعبے کا مختصر خلاصہ ہے؛ مکمل تفصیل انگریزی صفحات پر دستیاب ہے۔"
+    crumbs={crumbs} />
+  <section class="section">
+    <div class="container">
+      <h2 class="sr-only">شعبہ جات کی فہرست</h2>
+      <div class="grid grid--3">
+        {areas.map((a) => <PracticeCard href={`/practice-areas/${a.id}/`} hreflang="en" title={PRACTICE_UR[a.id]?.label ?? a.data.label} summary={PRACTICE_UR[a.id]?.summary ?? a.data.summary} icon={a.data.icon} linkText="مکمل تفصیل (انگریزی)" />)}
+        <PracticeCard href="/overseas-pakistanis/" hreflang="en" title="بیرونِ ملک مقیم پاکستانی" summary="مختار نامے کے ذریعے جائیداد، وراثت، خلع اور دیگر معاملات، واٹس ایپ یا ویڈیو پر مشاورت کے ساتھ۔" icon="overseas" linkText="مکمل تفصیل (انگریزی)" />
+      </div>
+    </div>
+  </section>
+  <CTASection lang="ur" />
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+/** NAP block — text must stay identical to the Google Business Profile. */
+import Icon from './Icon.astro';
+import { SITE, isSet, whatsappLink } from '../data/site';
+import { T, type Lang } from '../lib/i18n';
+interface Props { lang?: Lang }
+const { lang = 'en' } = Astro.props;
+const t = T[lang];
+const ur = lang === 'ur';
+---
+<address class="nap">
+  <div class="nap__row">
+    <Icon name="pin" />
+    <div>
+      <span class="nap__label">{t.address}</span>
+      <strong lang="en">{SITE.name}</strong><br />
+      <span lang="en" class={ur ? 'ltr' : undefined}>{SITE.napAddress}</span>
+      {ur && <><br /><span>{SITE.napAddressUr}</span></>}
+    </div>
+  </div>
+  <div class="nap__row">
+    <Icon name="phone" />
+    <div>
+      <span class="nap__label">{t.phone}</span>
+      <a href={SITE.phoneHref} class={ur ? 'ltr' : undefined}>{SITE.phoneDisplay}</a> ·
+      <a href={whatsappLink(lang)} target="_blank" rel="noopener">{ur ? 'واٹس ایپ پیغام' : 'WhatsApp message'}</a>
+    </div>
+  </div>
+  <div class="nap__row">
+    <Icon name="clock" />
+    <div>
+      <span class="nap__label">{t.hours}</span>
+      {ur ? SITE.hours.displayUr : SITE.hours.display}<br />
+      <span style="color:var(--muted)">{ur ? SITE.hours.closedNoteUr : SITE.hours.closedNote}</span>
+    </div>
+  </div>
+  {isSet(SITE.email) && (
+    <div class="nap__row">
+      <Icon name="mail" />
+      <div><span class="nap__label">{t.email}</span><a href={`mailto:${SITE.email}`}>{SITE.email}</a></div>
+    </div>
+  )}
+</address>

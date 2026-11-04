@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const guides = (await getCollection('guides')).sort((a, b) => +b.data.updated - +a.data.updated);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Legal Guides', href: '/guides/' },
+];
+---
+<BaseLayout
+  title="Legal Guides on Pakistani Law, Lahore | R&R Law Associates"
+  description="Plain-language legal guides on khula, pre-arrest bail and inheritance in Pakistan, written by advocates in Lahore. Read the guides or contact our office."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    title="Legal Guides"
+    eyebrow="Plain-language law"
+    intro="Practical explanations of common legal questions in Pakistan, written by our advocates. Each guide shows when it was last reviewed. Guides are general information and are not a substitute for advice on your own facts."
+    crumbs={crumbs}
+  />
+  <section class="section">
+    <div class="container">
+      <h2 class="sr-only">All guides</h2>
+      <div class="grid grid--3">
+        {guides.map((g) => (
+          <GuideCard href={`/guides/${g.id}/`} title={g.data.title} excerpt={g.data.excerpt} image={g.data.image} imageAlt={g.data.imageAlt} updated={g.data.updated} />
+        ))}
+      </div>
+    </div>
+  </section>
+  <CTASection heading="Have a question a guide does not answer?" />
+</BaseLayout>

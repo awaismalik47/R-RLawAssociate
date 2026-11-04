@@ -1,0 +1,23 @@
+{
+  "name": "rr-law-associates",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:site": "node scripts/verify-site.mjs",
+    "assets": "node scripts/prepare-assets.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "7.4.1"
+  },
+  "devDependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/noto-nastaliq-urdu": "^5.3.0",
+    "sharp": "^0.35.5"
+  }
+}

@@ -1,0 +1,30 @@
+---
+/** Featured block for the principal advocate (head of chambers). */
+import { Image } from 'astro:assets';
+import { getEntries, type CollectionEntry } from 'astro:content';
+interface Props { entry: CollectionEntry<'advocates'>; headingTag?: 'h2' | 'h3' }
+const { entry, headingTag = 'h2' } = Astro.props;
+const d = entry.data;
+const H = headingTag;
+const focus = await getEntries(d.focus);
+const href = `/advocates/${entry.id}/`;
+---
+<article class="principal split reveal">
+  <div class="frame-wrap">
+    <div class="frame principal__img">
+      <Image src={d.image} alt={d.imageAlt} widths={[360, 560, 800]} sizes="(min-width: 900px) 460px, 92vw" loading="lazy" />
+    </div>
+  </div>
+  <div>
+    <p class="eyebrow">{d.jobTitle}</p>
+    <H class="principal__name">{d.name}</H>
+    <span class="rule"></span>
+    <dl class="dl">
+      <div><dt>Enrolment</dt><dd>{d.enrolment}</dd></div>
+      <div><dt>Years of practice</dt><dd>{d.yearsOfPractice}</dd></div>
+      <div><dt>Bar memberships</dt><dd>{d.barMemberships.join('; ')}</dd></div>
+      <div><dt>Practice areas</dt><dd>{focus.map((f, i) => <>{i > 0 && ', '}<a href={`/practice-areas/${f.id}/`}>{f.data.label}</a></>)}</dd></div>
+    </dl>
+    <p class="mt-2"><a class="text-link" href={href}>Full profile of {d.name}</a></p>
+  </div>
+</article>

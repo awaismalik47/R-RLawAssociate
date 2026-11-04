@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/rr-monogram-light.png';
+import { NAV, T, URDU_PAIRS, enFor, type Lang } from '../lib/i18n';
+import { SITE } from '../data/site';
+
+interface Props { lang?: Lang }
+const { lang = 'en' } = Astro.props;
+const t = T[lang];
+const path = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/';
+const switchHref = lang === 'en' ? (URDU_PAIRS[path] ?? '/ur/') : (enFor(path) ?? '/');
+const switchLang = lang === 'en' ? 'ur' : 'en';
+const homeHref = lang === 'ur' ? '/ur/' : '/';
+const contactHref = lang === 'ur' ? '/ur/contact/#consultation' : '/contact/#consultation';
+const isCurrent = (href: string) => (href === '/ur/' ? path === href : path.startsWith(href));
+---
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href={homeHref}>
+      <Image src={logo} alt="" width={116} height={76} loading="eager" decoding="async" />
+      <span class="brand__text" lang="en">
+        <span class="brand__name">{SITE.name}</span>
+        <span class="brand__tag">Advocates · Lahore</span>
+      </span>
+    </a>
+    <nav id="site-nav" class="site-nav" aria-label={lang === 'ur' ? 'مرکزی' : 'Main'}>
+      <ul>
+        {NAV[lang].map((item) => (
+          <li><a href={item.href} hreflang={'hreflang' in item ? item.hreflang : undefined} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a></li>
+        ))}
+      </ul>
+      <div class="site-nav__extra">
+        <a class="lang-switch" href={switchHref} hreflang={switchLang} lang={switchLang} aria-label={t.langSwitchLabel}>{t.langSwitch}</a>
+        <a class="btn btn--outline-gold" href={contactHref}>{t.book}</a>
+      </div>
+    </nav>
+    <a class="lang-switch header-lang" href={switchHref} hreflang={switchLang} lang={switchLang} aria-label={t.langSwitchLabel}>{t.langSwitch}</a>
+    <a class="btn btn--outline-gold header-cta" href={contactHref}>{t.book}</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle__bars" aria-hidden="true"><span></span></span>
+      <span>{t.menu}</span>
+    </button>
+  </div>
+</header>

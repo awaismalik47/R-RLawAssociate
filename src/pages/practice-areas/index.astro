@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import PracticeCard from '../../components/PracticeCard.astro';
+import CTASection from '../../components/CTASection.astro';
+import { abs } from '../../data/site';
+
+const areas = (await getCollection('practiceAreas')).sort((a, b) => a.data.order - b.data.order);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Practice Areas', href: '/practice-areas/' },
+];
+const itemList = {
+  '@type': 'ItemList',
+  name: 'Practice areas of R&R Law Associates',
+  itemListElement: areas.map((a, i) => ({ '@type': 'ListItem', position: i + 1, name: a.data.title, url: abs(`/practice-areas/${a.id}/`) })),
+};
+---
+<BaseLayout
+  title="Practice Areas of Our Lawyers in Lahore | R&R Law Associates"
+  description="Family, criminal, civil, property, writ, corporate, banking, tax and service matters handled by our lawyers in Lahore. Choose an area to learn more."
+  breadcrumbs={crumbs}
+  jsonLd={[itemList]}
+>
+  <PageHero
+    title="Practice Areas"
+    eyebrow="What we do"
+    intro="Our advocates handle litigation and advisory work in the courts of Lahore and the Lahore High Court. Each page below explains when you may need help, how we approach the work, the documents usually required and how long matters typically take."
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Areas of practice</p>
+        <h2>Legal services from our office near Lahore High Court</h2>
+        <span class="rule"></span>
+      </div>
+      <div class="grid grid--3">
+        {areas.map((a) => (
+          <PracticeCard href={`/practice-areas/${a.id}/`} title={a.data.label} summary={a.data.summary} icon={a.data.icon} linkText={a.data.title} />
+        ))}
+        <PracticeCard href="/overseas-pakistanis/" title="Overseas Pakistanis" summary="Property, inheritance, khula and power of attorney matters for Pakistanis living abroad, with consultations over WhatsApp or video." icon="overseas" linkText="Lawyer for overseas Pakistanis" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--stone">
+    <div class="container container--narrow">
+      <h2>Not sure which area your matter falls under?</h2>
+      <span class="rule"></span>
+      <p>Many legal problems cross more than one area. A family separation may involve property and maintenance; a dispute with a government department may need both a departmental appeal and a writ petition. You do not need to work this out yourself. Describe what has happened when you <a href="/contact/">contact our office</a>, and we will tell you which route fits and who in the firm will handle it.</p>
+      <p>You can also read our <a href="/guides/">plain-language legal guides</a> or the answers to <a href="/faq/">frequently asked questions</a> before you get in touch.</p>
+    </div>
+  </section>
+
+  <CTASection />
+</BaseLayout>

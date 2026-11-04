@@ -1,0 +1,28 @@
+---
+import Icon from './Icon.astro';
+import PillarDivider from './PillarDivider.astro';
+import { SITE, whatsappLink } from '../data/site';
+import type { Lang } from '../lib/i18n';
+interface Props { heading?: string; text?: string; lang?: Lang; id?: string }
+const ur = Astro.props.lang === 'ur';
+const {
+  heading = ur ? 'اپنے معاملے پر بات کریں' : 'Discuss your matter with an advocate',
+  text = ur
+    ? 'اپنے معاملے کی مختصر تفصیل بتائیں۔ ہم ملاقات کا وقت طے کریں گے اور بتائیں گے کہ کون سی دستاویزات ساتھ لانی ہیں۔'
+    : 'Tell us briefly what has happened. We will arrange a consultation at our Mozang Chungi office or by phone, and let you know which documents to bring.',
+  lang = 'en',
+  id,
+} = Astro.props;
+---
+<section class="section cta" id={id}>
+  <div class="container container--narrow reveal">
+    <PillarDivider />
+    <h2 class="mt-2">{heading}</h2>
+    <p>{text}</p>
+    <div class="btn-row">
+      <a class="btn btn--gold" href={ur ? '/ur/contact/#consultation' : '/contact/#consultation'}>{ur ? 'مشاورت کا وقت لیں' : 'Book a Consultation'}</a>
+      <a class="btn btn--outline-light" href={SITE.phoneHref}><Icon name="phone" /><span class={ur ? 'ltr' : undefined}>{SITE.phoneDisplay}</span></a>
+      <a class="btn btn--outline-light" href={whatsappLink(lang)} target="_blank" rel="noopener"><Icon name="whatsapp" />{ur ? 'واٹس ایپ' : 'WhatsApp'}</a>
+    </div>
+  </div>
+</section>

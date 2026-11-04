@@ -1,0 +1,95 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTASection from '../components/CTASection.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, whatsappLink } from '../data/site';
+import { service, faqPage } from '../lib/schema';
+import deskImg from '../assets/images/rr-law-associates-advocate-at-desk-lahore.jpg';
+
+const url = '/overseas-pakistanis/';
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Overseas Pakistanis', href: url },
+];
+const faqs = [
+  { q: 'Do I need to travel to Pakistan for my case?', a: 'Usually not. Most civil, property, family and inheritance cases can be conducted through an attorney appointed by a special power of attorney. You may need to appear in person, or by video link where the court allows it, for a few specific steps, such as giving evidence or the reconciliation hearing in a family case.' },
+  { q: 'Where do I get a power of attorney attested?', a: 'A power of attorney executed abroad is normally attested by the Pakistani embassy or consulate in the country where you live. Some missions offer online appointments, and NADRA also offers an online facility for certain documents. The attested document is then sent to Pakistan and, where required, stamped and presented to the relevant office or court.' },
+  { q: 'How will I know what happens at each hearing?', a: 'We send a short update after each hearing by WhatsApp or email, explaining what happened, the next date and anything we need from you. Copies of important orders are shared as soon as they are available.' },
+  { q: 'How do I pay fees from abroad?', a: 'Fees are agreed in writing before we begin. Payment can be made by bank transfer to the firm\'s account in Pakistan. We will never ask you to pay into a personal account.' },
+  { q: 'Can someone in my family act for me?', a: 'Yes. Many clients appoint a trusted relative as their attorney to sign papers and attend offices, while we conduct the legal work. Choose your attorney carefully and limit the power of attorney to the specific matter.' },
+];
+---
+<BaseLayout
+  title="Lawyer for Overseas Pakistanis Lahore | R&R Law Associates"
+  description="Lawyer for overseas Pakistanis in Lahore: property, inheritance, khula and power of attorney matters handled remotely by WhatsApp or video. Contact us."
+  breadcrumbs={crumbs}
+  jsonLd={[service({ name: 'Legal services for overseas Pakistanis', serviceType: 'Legal representation in Pakistan for overseas Pakistanis', description: 'Property, inheritance, family and power of attorney matters in Lahore handled for clients living abroad.', url }), faqPage(faqs)]}
+>
+  <PageHero
+    title="Lawyer for Overseas Pakistanis in Lahore"
+    eyebrow="Overseas Pakistanis"
+    intro="If you live abroad and need a lawyer for overseas Pakistanis in Lahore, we can handle many matters without you travelling home: property and inheritance disputes, khula and family cases, and the power of attorney that makes them possible. Consultations take place over WhatsApp or video at a time that suits your time zone."
+    crumbs={crumbs}
+  >
+    <div class="btn-row" style="margin-top:1.75rem">
+      <a class="btn btn--gold" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp {SITE.phoneDisplay}</a>
+      <a class="btn btn--outline-light" href="/contact/#consultation">Request a consultation</a>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container split">
+      <div class="reveal">
+        <p class="eyebrow">What we handle</p>
+        <h2>Legal help for overseas Pakistanis in Lahore</h2>
+        <span class="rule"></span>
+        <ul class="check-list">
+          <li><strong>Property:</strong> <a href="/practice-areas/property-lawyer-lahore/">property and possession disputes</a>, illegal occupation, tenants who will not leave, and title checks before buying or selling.</li>
+          <li><strong>Inheritance:</strong> succession certificates, inheritance mutations and partition of family property. See our guide to <a href="/guides/inheritance-rights-in-pakistan/">inheritance rights in Pakistan</a>.</li>
+          <li><strong>Family:</strong> <a href="/practice-areas/family-lawyer-lahore/">khula, divorce, custody and maintenance</a> cases in the Lahore Family Courts, and the Union Council certificate after divorce.</li>
+          <li><strong>Power of attorney:</strong> drafting a special power of attorney limited to your matter, and advice on attestation and revocation.</li>
+          <li><strong>Documents and records:</strong> obtaining certified copies, revenue records and court orders on your behalf.</li>
+        </ul>
+      </div>
+      <div class="frame-wrap reveal">
+        <div class="frame">
+          <Image src={deskImg} alt="Advocate at R&R Law Associates in Lahore preparing papers for an overseas Pakistani client" widths={[480, 760, 1000]} sizes="(min-width: 900px) 560px, 92vw" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--navy">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2>Handling your matter from abroad</h2>
+        <span class="rule"></span>
+      </div>
+      <ol class="steps">
+        <li class="reveal"><h3>Message or call</h3><p>Send a WhatsApp message with a short description and your time zone. We arrange a video or voice consultation.</p></li>
+        <li class="reveal"><h3>Review documents</h3><p>Share copies of your documents. We explain your options, the likely steps and the fee, confirmed in writing.</p></li>
+        <li class="reveal"><h3>Power of attorney</h3><p>We draft the power of attorney. You sign it at a Pakistani embassy or consulate and send it to us.</p></li>
+        <li class="reveal"><h3>We act and report</h3><p>We file and pursue the matter in Lahore and update you after every hearing, with copies of orders.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--narrow">
+      <h2>A word of caution about powers of attorney</h2>
+      <span class="rule"></span>
+      <p>Many property problems faced by overseas Pakistanis begin with a general power of attorney that gave a relative or agent wide powers to sell. Before signing, make sure the document is limited to the specific matter, names the property clearly and does not include a power to sell, gift or mortgage unless you intend it. If you have already signed a broad power of attorney and are worried about how it is being used, it can be revoked, and the relevant offices can be informed.</p>
+      <p>If you fear that your property has been transferred without your consent, ask for advice early. The sooner the revenue record or society file is checked, the more options you will have.</p>
+      <h2 class="mt-3" id="faqs">Questions from overseas clients</h2>
+    </div>
+    <div class="container container--narrow">
+      <FAQAccordion faqs={faqs} />
+    </div>
+  </section>
+
+  <CTASection heading="Speak to an advocate from abroad" text="Send us a WhatsApp message with your time zone and a short description of your matter. We will arrange a video or voice consultation." />
+</BaseLayout>

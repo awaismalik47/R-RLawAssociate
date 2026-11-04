@@ -1,0 +1,14 @@
+---
+/** Accessible accordion using native <details>/<summary> (keyboard operable, no JS). */
+import type { FAQ } from '../lib/schema';
+interface Props { faqs: FAQ[]; center?: boolean; headingLevel?: 'h3' | 'none'; openFirst?: boolean }
+const { faqs, center = false, openFirst = false } = Astro.props;
+---
+<div class={`faq ${center ? 'faq--center' : ''}`}>
+  {faqs.map((f, i) => (
+    <details open={openFirst && i === 0}>
+      <summary><h3>{f.q}</h3></summary>
+      <div class="faq__answer"><p set:html={f.a} /></div>
+    </details>
+  ))}
+</div>

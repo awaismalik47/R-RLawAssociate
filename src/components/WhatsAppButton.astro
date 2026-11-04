@@ -1,0 +1,10 @@
+---
+import Icon from './Icon.astro';
+import { whatsappLink } from '../data/site';
+import type { Lang } from '../lib/i18n';
+interface Props { lang?: Lang }
+const { lang = 'en' } = Astro.props;
+---
+<a class="wa-float" href={whatsappLink(lang)} target="_blank" rel="noopener" aria-label={lang === 'ur' ? 'واٹس ایپ پر رابطہ کریں (نئی ونڈو)' : 'Message R&R Law Associates on WhatsApp (opens in a new tab)'}>
+  <Icon name="whatsapp" />
+</a>

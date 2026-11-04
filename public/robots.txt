@@ -1,0 +1,5 @@
+# [PLACEHOLDER] Update the domain below when the site goes live.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.rrlawassociates.com/sitemap-index.xml

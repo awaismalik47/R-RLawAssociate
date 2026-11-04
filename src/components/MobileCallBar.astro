@@ -1,0 +1,12 @@
+---
+import Icon from './Icon.astro';
+import { SITE, whatsappLink } from '../data/site';
+import { T, type Lang } from '../lib/i18n';
+interface Props { lang?: Lang }
+const { lang = 'en' } = Astro.props;
+const t = T[lang];
+---
+<nav class="mobile-bar" aria-label={lang === 'ur' ? 'فوری رابطہ' : 'Quick contact'}>
+  <a href={SITE.phoneHref}><Icon name="phone" /><span>{t.call}<span class="sr-only"> {SITE.phoneDisplay}</span></span></a>
+  <a href={whatsappLink(lang)} target="_blank" rel="noopener"><Icon name="whatsapp" /><span>{t.whatsapp}</span></a>
+</nav>

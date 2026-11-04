@@ -1,0 +1,55 @@
+---
+/** Thin-line custom icon set (48×48 grid, 1.25 stroke) + UI icons (24×24). */
+interface Props { name: string; class?: string; title?: string }
+const { name, class: cls, title } = Astro.props;
+
+const LINE: Record<string, string> = {
+  family: '<circle cx="15" cy="12" r="4.5"/><circle cx="33" cy="12" r="4.5"/><circle cx="24" cy="26" r="3.5"/><path d="M7 40v-9a8 8 0 0 1 8-8h0a8 8 0 0 1 5.6 2.3M41 40v-9a8 8 0 0 0-8-8h0a8 8 0 0 0-5.6 2.3M18 42v-4a6 6 0 0 1 12 0v4"/>',
+  criminal: '<path d="M24 5 9 10.5v11.2c0 9.6 6.4 17.4 15 20.3 8.6-2.9 15-10.7 15-20.3V10.5L24 5Z"/><path d="M24 15v11M19 20.5h10"/><path d="M18 32h12"/>',
+  civil: '<path d="M12 6h18l8 8v28H12z"/><path d="M30 6v8h8"/><path d="M17 20h16M17 26h16M17 32h10"/><path d="M28 38l3-1 7-7-2-2-7 7z"/>',
+  property: '<path d="M6 22 24 8l18 14"/><path d="M11 18.5V41h26V18.5"/><path d="M20 41V29h8v12"/><path d="M6 41h36"/>',
+  writ: '<path d="M7 16 24 7l17 9z"/><path d="M8 16h32M8 39h32M6 43h36"/><path d="M12 20v15M19 20v15M29 20v15M36 20v15"/><path d="M10 35h28"/>',
+  corporate: '<rect x="9" y="15" width="30" height="25"/><path d="M18 15v-5h12v5"/><path d="M9 24h30"/><path d="M21 22v5h6v-5"/>',
+  banking: '<ellipse cx="20" cy="12" rx="11" ry="4"/><path d="M9 12v6c0 2.2 4.9 4 11 4s11-1.8 11-4v-6"/><path d="M9 18v6c0 2.2 4.9 4 11 4"/><path d="M9 24v6c0 2.2 4.9 4 11 4"/><circle cx="32" cy="32" r="9"/><path d="M32 27v10M29.5 29.5h4a1.8 1.8 0 0 1 0 3.5h-3a1.8 1.8 0 0 0 0 3.5h4"/>',
+  tax: '<path d="M11 5h26v38l-4.3-3-4.4 3-4.3-3-4.3 3-4.4-3L11 43z"/><path d="M18 30l12-12"/><circle cx="19" cy="19" r="2.2"/><circle cx="29" cy="29" r="2.2"/>',
+  service: '<rect x="10" y="9" width="28" height="33" rx="1"/><path d="M19 9V5h10v4"/><circle cx="24" cy="21" r="5"/><path d="M15.5 36c1.2-4.5 4.5-7 8.5-7s7.3 2.5 8.5 7"/>',
+  overseas: '<circle cx="22" cy="24" r="16"/><path d="M6 24h32M22 8c4.5 4.4 6.5 9.8 6.5 16S26.5 35.6 22 40c-4.5-4.4-6.5-9.8-6.5-16S17.5 12.4 22 8Z"/><path d="M33 9l9-3-3 9-3.5-2.5L31 17l-1.5-1.5 4.5-4.5z"/>',
+  contact: '<path d="M8 12h32v24H8z"/><path d="m8 12 16 14 16-14"/>',
+  consultation: '<path d="M6 10h24v16H16l-6 5v-5H6z"/><path d="M34 18h8v15h-4v5l-6-5H20v-3"/>',
+  documents: '<path d="M14 6h16l8 8v24H14z"/><path d="M30 6v8h8"/><path d="M10 12v30h22"/><path d="M19 21h12M19 27h12M19 33h7"/>',
+  representation: '<path d="M7 16 24 7l17 9z"/><path d="M8 16h32M6 41h36"/><path d="M12 20v17M20 20v17M28 20v17M36 20v17"/>',
+};
+
+const UI: Record<string, string> = {
+  phone: '<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  map: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>',
+};
+
+const FILL: Record<string, string> = {
+  whatsapp: '<path d="M16.04 4C9.4 4 4 9.38 4 16.01c0 2.12.55 4.18 1.6 6L4 28l6.16-1.6a12 12 0 0 0 5.88 1.5h.01C22.67 27.9 28 22.53 28 15.9 28 12.7 26.76 9.7 24.5 7.45A11.9 11.9 0 0 0 16.04 4Zm0 21.88h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.21-3.66.95.98-3.56-.24-.37a9.86 9.86 0 0 1-1.52-5.3c0-5.47 4.46-9.92 9.94-9.92a9.86 9.86 0 0 1 9.92 9.93c0 5.48-4.46 9.86-10 9.86Zm5.45-7.42c-.3-.15-1.77-.87-2.04-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.95 1.17-.18.2-.35.22-.65.07-.3-.15-1.27-.47-2.41-1.49a9.04 9.04 0 0 1-1.67-2.08c-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.53.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.58c-.2 0-.52.08-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.47 1.07 2.88 1.22 3.08.15.2 2.1 3.2 5.08 4.49.71.3 1.27.49 1.7.63.72.22 1.37.19 1.88.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.08-.13-.28-.2-.58-.35Z"/>',
+  facebook: '<path d="M13.5 21v-7.5H16l.4-3H13.5V8.6c0-.87.25-1.46 1.5-1.46h1.6V4.46A21 21 0 0 0 14.27 4.3c-2.3 0-3.87 1.4-3.87 3.97v2.23H7.8v3h2.6V21z"/>',
+  instagram: '<path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4Zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm4.9-8.95a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0ZM12 4.6c2.4 0 2.7 0 3.65.05 2.45.11 3.6 1.28 3.7 3.7.05.95.06 1.24.06 3.65s0 2.7-.06 3.65c-.1 2.42-1.24 3.6-3.7 3.7-.95.05-1.24.06-3.65.06s-2.7 0-3.65-.06c-2.46-.11-3.6-1.29-3.7-3.7C4.6 14.7 4.6 14.4 4.6 12s0-2.7.05-3.65c.11-2.43 1.25-3.6 3.7-3.7.95-.05 1.24-.05 3.65-.05ZM12 3c-2.45 0-2.75 0-3.71.05-3.27.15-5.09 1.96-5.24 5.24C3 9.25 3 9.55 3 12s0 2.75.05 3.71c.15 3.27 1.96 5.09 5.24 5.24.96.04 1.26.05 3.71.05s2.75 0 3.71-.05c3.27-.15 5.09-1.96 5.24-5.24.04-.96.05-1.26.05-3.71s0-2.75-.05-3.71c-.15-3.27-1.96-5.09-5.24-5.24C14.75 3 14.45 3 12 3Z"/>',
+  linkedin: '<path d="M6.94 8.75H3.56V20h3.38zM5.25 3.5a1.95 1.95 0 1 0 0 3.9 1.95 1.95 0 0 0 0-3.9ZM20.5 13.4c0-3.02-.65-5-4.06-5-1.64 0-2.74.9-3.19 1.75h-.05V8.75H9.96V20h3.38v-5.57c0-1.47.28-2.9 2.1-2.9 1.8 0 1.82 1.68 1.82 2.99V20h3.24z"/>',
+};
+
+let svg: string;
+let viewBox: string;
+let attrs: Record<string, string>;
+if (LINE[name]) {
+  svg = LINE[name]; viewBox = '0 0 48 48';
+  attrs = { fill: 'none', stroke: 'currentColor', 'stroke-width': '1.25', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
+} else if (UI[name]) {
+  svg = UI[name]; viewBox = '0 0 24 24';
+  attrs = { fill: 'none', stroke: 'currentColor', 'stroke-width': '1.6', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
+} else if (FILL[name]) {
+  svg = FILL[name]; viewBox = name === 'whatsapp' ? '0 0 32 32' : '0 0 24 24';
+  attrs = { fill: 'currentColor' };
+} else {
+  throw new Error(`Unknown icon: ${name}`);
+}
+---
+<svg xmlns="http://www.w3.org/2000/svg" viewBox={viewBox} class={cls} {...attrs} aria-hidden={title ? undefined : 'true'} role={title ? 'img' : undefined} focusable="false"><Fragment set:html={(title ? `<title>${title}</title>` : '') + svg} /></svg>

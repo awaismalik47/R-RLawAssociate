@@ -1,0 +1,230 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Pillar from '../components/Pillar.astro';
+import PillarDivider from '../components/PillarDivider.astro';
+import PracticeSlider from '../components/PracticeSlider.astro';
+import AdvocateCard from '../components/AdvocateCard.astro';
+import PrincipalAdvocate from '../components/PrincipalAdvocate.astro';
+import GuideCard from '../components/GuideCard.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import ContactForm from '../components/ContactForm.astro';
+import ContactDetails from '../components/ContactDetails.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import { SITE, whatsappLink } from '../data/site';
+import { legalService, organization, website, faqPage } from '../lib/schema';
+import { heroSources } from '../lib/hero';
+import heroImg from '../assets/images/rr-law-associates-advocate-at-desk-lahore.jpg';
+import aboutImg from '../assets/images/rr-law-associates-advocates-chamber-lahore.jpg';
+
+const areas = (await getCollection('practiceAreas')).sort((a, b) => a.data.order - b.data.order);
+const advocates = (await getCollection('advocates')).sort((a, b) => a.data.order - b.data.order);
+const principal = advocates.find((a) => a.data.role === 'principal');
+const associates = advocates.filter((a) => a !== principal);
+const guides = (await getCollection('guides')).sort((a, b) => +b.data.updated - +a.data.updated).slice(0, 3);
+const hero = await heroSources(heroImg);
+
+const faqs = [
+  { q: 'Where is the office of R&R Law Associates?', a: `Our office is at ${SITE.napAddress}, on Turner Road in Mozang Chungi, a short walk from the Lahore High Court. See <a href="/contact/">directions to our office</a>.` },
+  { q: 'Do I need an appointment?', a: 'Yes, please book in advance by phone, WhatsApp or the consultation form so that an advocate is available to see you and has time to read your documents.' },
+  { q: 'Which courts do you appear in?', a: 'We appear before the Lahore High Court and the district courts in Lahore, including Family Courts, Civil Courts, Magistrates and Sessions Courts, Banking Courts and tribunals, depending on the matter.' },
+  { q: 'How are your fees worked out?', a: 'Fees depend on the type of case, the court, how urgent it is and how much work is likely. We explain the fee and what it covers in writing before you instruct us. Read more about <a href="/process/">our process and fees</a>.' },
+  { q: 'Can you help if I live outside Pakistan?', a: 'Yes. Many matters can be handled through a properly attested power of attorney, with consultations by WhatsApp or video call. See our page for <a href="/overseas-pakistanis/">overseas Pakistanis</a>.' },
+  { q: 'Will my information be kept confidential?', a: 'Yes. What you tell us in a consultation is treated as confidential. Please avoid sending sensitive documents through the website form; we will tell you how to share them securely.' },
+];
+
+const steps = [
+  { t: 'Contact', d: 'Call, WhatsApp or send the form with a short description of your matter. We arrange a suitable time.' },
+  { t: 'Consultation', d: 'Meet an advocate at our office or by video. We listen, review your papers and explain your options in plain language.' },
+  { t: 'Strategy and documents', d: 'We agree a plan and fee in writing, then prepare the petition, suit or reply with the documents the court needs.' },
+  { t: 'Representation', d: 'We appear for you in court, keep you informed after each hearing, and advise on next steps until the matter concludes.' },
+];
+---
+<BaseLayout
+  title="Law Firm in Lahore Near the High Court | R&R Law Associates"
+  description="R&R Law Associates is a law firm in Lahore near the High Court, advising on family, criminal, civil, property and writ matters. Book a consultation today."
+  jsonLd={[legalService(), organization(), website(), faqPage(faqs)]}
+  preload={{ srcset: hero.avifSrcset, sizes: hero.sizes, type: 'image/avif' }}
+>
+  <!-- 1. Hero -->
+  <section class="hero">
+    <picture class="hero__media">
+      <source type="image/avif" srcset={hero.avifSrcset} sizes={hero.sizes} />
+      <source type="image/webp" srcset={hero.webpSrcset} sizes={hero.sizes} />
+      <img src={hero.fallback} width={hero.width} height={hero.height} alt="Advocate at work at a desk in the chamber of R&R Law Associates, law firm in Lahore near the High Court" fetchpriority="high" loading="eager" decoding="async" />
+    </picture>
+    <Pillar class="hero__watermark" />
+    <div class="container">
+      <div class="hero__content">
+        <p class="eyebrow">Advocates · Lahore High Court</p>
+        <h1>Law Firm in Lahore — Litigation and Legal Counsel Near the High Court</h1>
+        <p class="hero__sub">Clear, practical advice on family, criminal, civil, property and constitutional matters from lawyers near Lahore High Court in Mozang Chungi.</p>
+        <div class="btn-row">
+          <a class="btn btn--gold" href="/contact/#consultation">Book a Consultation</a>
+          <a class="btn btn--outline-light" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Credentials -->
+  <section class="credentials" aria-label="Firm credentials">
+    <div class="container">
+      <ul class="credentials__list">
+        <li class="credentials__item"><span class="credentials__label">In practice</span><span class="credentials__value">14 years of combined practice</span></li>
+        <li class="credentials__item"><span class="credentials__label">Courts</span><span class="credentials__value">Lahore High Court and district courts of Lahore <span class="placeholder">[PLACEHOLDER: confirm]</span></span></li>
+        <li class="credentials__item"><span class="credentials__label">Bar memberships</span><span class="credentials__value"><span class="placeholder">[PLACEHOLDER: e.g. Lahore High Court Bar Association]</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. Practice areas -->
+  <section class="section" id="practice-areas">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Practice areas</p>
+        <h2>Legal help for individuals, families and businesses in Lahore</h2>
+        <span class="rule"></span>
+        <p>We handle litigation and advisory work across the main areas of Pakistani law. Choose an area to read how we approach it, what documents you will need and how long it usually takes.</p>
+      </div>
+      <PracticeSlider
+        label="Practice areas"
+        items={[
+          ...areas.map((a) => ({ href: `/practice-areas/${a.id}/`, title: a.data.label, summary: a.data.summary, icon: a.data.icon, linkText: `About ${a.data.label.toLowerCase()}` })),
+          { href: '/overseas-pakistanis/', title: 'Overseas Pakistanis', summary: 'Power of attorney, property, khula and inheritance matters handled remotely, with consultations over WhatsApp or video.', icon: 'overseas', linkText: 'Help for overseas Pakistanis' },
+        ]}
+      />
+      <p class="mt-2"><a class="text-link" href="/practice-areas/">See all practice areas</a></p>
+    </div>
+  </section>
+
+  <!-- 4. About -->
+  <section class="section section--stone">
+    <div class="container split">
+      <div class="frame-wrap reveal">
+        <div class="frame">
+          <Image src={aboutImg} alt="Advocates of R&R Law Associates in their wood-panelled chamber in Mozang Chungi, Lahore" widths={[480, 760, 1000, 1280]} sizes="(min-width: 900px) 560px, 92vw" loading="lazy" />
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="eyebrow">About the firm</p>
+        <h2>A chamber in Mozang Chungi, minutes from the High Court</h2>
+        <span class="rule"></span>
+        <p>R&amp;R Law Associates (Raza &amp; Raza Law Associates) is a law firm in Lahore practising from Siddiqi Plaza on Turner Road. Our location means we can reach the Lahore High Court and the courts of central Lahore quickly, which matters when a case is urgent.</p>
+        <p>We believe clients should understand their case. We explain the law in plain language, put our fees in writing and keep you informed after every hearing.</p>
+        <a class="text-link" href="/about/">More about R&amp;R Law Associates</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. How we work -->
+  <section class="section section--navy">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How we work</p>
+        <h2>From first call to courtroom</h2>
+        <span class="rule"></span>
+      </div>
+      <ol class="steps">
+        {steps.map((s) => <li class="reveal"><h3>{s.t}</h3><p>{s.d}</p></li>)}
+      </ol>
+      <p class="mt-2"><a class="text-link" style="color:var(--ivory)" href="/process/">Our process and how fees are explained</a></p>
+    </div>
+  </section>
+
+  <!-- 6. Advocates -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Our advocates</p>
+        <h2>The lawyers who will handle your case</h2>
+        <span class="rule"></span>
+        <p>You will meet the advocate responsible for your matter, not a clerk.</p>
+      </div>
+      {principal && <PrincipalAdvocate entry={principal} headingTag="h3" />}
+      {associates.length > 0 && (
+        <>
+          <h3 class="mt-3">{principal ? 'Associate advocates' : 'Our advocates'}</h3>
+          <div class="grid grid--3 mt-2">
+            {associates.map((a) => <AdvocateCard href={`/advocates/${a.id}/`} name={a.data.name} jobTitle={a.data.jobTitle} enrolment={a.data.enrolment} focus={a.data.knowsAbout.slice(0, 3).join(' · ')} image={a.data.image} imageAlt={a.data.imageAlt} headingTag="h4" />)}
+          </div>
+        </>
+      )}
+      <p class="mt-2"><a class="text-link" href="/advocates/">Meet our advocates</a></p>
+    </div>
+  </section>
+
+  <!-- 7. Overseas -->
+  <section class="section section--deep">
+    <Pillar class="page-hero__watermark" />
+    <div class="container split">
+      <div class="reveal">
+        <p class="eyebrow">Overseas Pakistanis</p>
+        <h2>Legal matters in Pakistan, handled while you are abroad</h2>
+        <span class="rule"></span>
+        <p>Property disputes, inheritance, khula and power of attorney matters can usually be handled without you travelling to Lahore. We consult over WhatsApp or video and explain how to attest documents at a Pakistani mission.</p>
+        <div class="btn-row">
+          <a class="btn btn--gold" href="/overseas-pakistanis/">Help for overseas Pakistanis</a>
+          <a class="btn btn--outline-light" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
+        </div>
+      </div>
+      <ul class="check-list reveal">
+        <li>Drafting and checking a power of attorney</li>
+        <li>Property, possession and inheritance disputes</li>
+        <li>Khula and family cases through an attorney</li>
+        <li>Updates after each hearing by WhatsApp or email</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. Guides -->
+  {guides.length > 0 && (
+    <section class="section section--stone">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Legal guides</p>
+          <h2>Plain-language guides to Pakistani law</h2>
+          <span class="rule"></span>
+        </div>
+        <div class="grid grid--3">
+          {guides.map((g) => <GuideCard href={`/guides/${g.id}/`} title={g.data.title} excerpt={g.data.excerpt} image={g.data.image} imageAlt={g.data.imageAlt} updated={g.data.updated} />)}
+        </div>
+        <p class="mt-2"><a class="text-link" href="/guides/">All legal guides</a></p>
+      </div>
+    </section>
+  )}
+
+  <!-- 9. FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Questions</p>
+        <h2>Frequently asked questions</h2>
+        <span class="rule"></span>
+      </div>
+      <FAQAccordion faqs={faqs} center />
+      <p class="center mt-2"><a class="text-link" href="/faq/">More answers in our FAQ</a></p>
+    </div>
+  </section>
+
+  <!-- 10. Contact -->
+  <section class="section section--stone" id="contact">
+    <div class="container">
+      <PillarDivider />
+      <div class="section-head section-head--center mt-2">
+        <p class="eyebrow">Contact</p>
+        <h2>Visit our office or request a consultation</h2>
+        <span class="rule"></span>
+      </div>
+      <div class="contact-grid">
+        <div>
+          <ContactDetails />
+          <MapEmbed />
+        </div>
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTASection from '../components/CTASection.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import { faqPage } from '../lib/schema';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Our Process & Fees', href: '/process/' },
+];
+const stages = [
+  { t: 'First contact', d: 'You call, send a WhatsApp message or fill in the consultation form. We ask a few questions to understand the type of matter and any deadlines, such as a court date or a notice period, and arrange a consultation.' },
+  { t: 'Consultation', d: 'You meet an advocate at our Mozang Chungi office or by video. Bring copies of every document you have. We listen, read the papers and explain the law, your options and the realistic risks, in plain language.' },
+  { t: 'Engagement and fee', d: 'If you decide to go ahead, we confirm in writing what we will do, the fee, what it covers and what it does not (for example court fees, stamp duty or certified copies), and how payment is to be made.' },
+  { t: 'Preparation', d: 'We collect any further documents, obtain certified copies of records, and draft the suit, petition, reply or agreement. You review and sign the papers before they are filed.' },
+  { t: 'Representation', d: 'We file the case and appear for you at each hearing. After every hearing, we tell you what happened, the next date and whether anything is required from you.' },
+  { t: 'Conclusion and after', d: 'When the matter is decided we explain the result, any right of appeal and the time limit for it, and the steps needed to implement the order, such as execution or updating official records.' },
+];
+const faqs = [
+  { q: 'Is the first consultation charged?', a: 'Consultations are charged at a fee that we tell you when you book, so that you know the cost before you attend. [PLACEHOLDER: confirm consultation fee policy]' },
+  { q: 'Why can you not give a fixed price on the phone?', a: 'Fees depend on the type of case, the court, the stage it has reached, how urgent it is and whether it is likely to be contested. We need to see the papers before we can give an accurate figure.' },
+  { q: 'Will the fee change during the case?', a: 'The written fee agreement explains what is covered. If the matter changes significantly, for example an appeal is filed or a new case is brought against you, we discuss any additional fee with you before doing the extra work.' },
+  { q: 'What other costs might there be?', a: 'Besides our fee, there may be court fees, stamp duty, the cost of certified copies, notices or newspaper publication, and travel to courts outside Lahore. We tell you about these in advance.' },
+];
+---
+<BaseLayout
+  title="Our Process and How Fees Work, Lahore | R&R Law Associates"
+  description="How a legal matter proceeds at R&R Law Associates in Lahore, from first call to final order, and how our fees are explained and agreed in writing. Read on."
+  breadcrumbs={crumbs}
+  jsonLd={[faqPage(faqs)]}
+>
+  <PageHero
+    title="Our Process and Fees"
+    eyebrow="How we work"
+    intro="Knowing what will happen next makes a legal matter easier to manage. This page explains how a case usually proceeds with us, from the first call to the final order, and how we explain and agree fees."
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Six stages</p>
+        <h2>How a matter proceeds</h2>
+        <span class="rule"></span>
+      </div>
+      <ol class="steps steps--light">
+        {stages.map((s) => <li class="reveal"><h3>{s.t}</h3><p>{s.d}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--stone">
+    <div class="container container--narrow">
+      <p class="eyebrow">Fees</p>
+      <h2>How fees are explained</h2>
+      <span class="rule"></span>
+      <p>We do not publish a price list, because no two cases are the same. A bail petition that is decided at the first hearing involves very different work from a property suit that runs through evidence. Instead we follow a few simple principles:</p>
+      <ul class="check-list">
+        <li><strong>Before you commit,</strong> we tell you the fee and what it covers.</li>
+        <li><strong>In writing,</strong> so that there is no misunderstanding later.</li>
+        <li><strong>Separate from expenses</strong> such as court fees, stamp duty and certified copies, which we list for you.</li>
+        <li><strong>No extra work without discussion.</strong> If the scope changes, we talk to you first.</li>
+        <li><strong>Receipts</strong> for every payment, made to the firm's account.</li>
+      </ul>
+      <p>Fees usually depend on the type of matter and court, the stage the case has reached, urgency, the volume of documents, and whether the other side is likely to contest.</p>
+      <h2 class="mt-3" id="faqs">Questions about fees</h2>
+    </div>
+    <div class="container container--narrow">
+      <FAQAccordion faqs={faqs} />
+      <p class="mt-2">You can find more answers in our <a href="/faq/">frequently asked questions</a>, or <a href="/contact/">contact the office</a> to arrange a consultation.</p>
+    </div>
+  </section>
+
+  <CTASection />
+</BaseLayout>

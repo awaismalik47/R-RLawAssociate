@@ -1,0 +1,93 @@
+---
+/**
+ * Accessible, dependency-free practice-area slider.
+ * - Native horizontal scroll with CSS scroll-snap (works with touch, trackpad and keyboard, and without JS)
+ * - Auto-advances every 5 s only while visible; pauses on hover, focus or touch; Pause/Play button (WCAG 2.2.2)
+ * - No auto-advance for visitors who prefer reduced motion
+ * - All cards are in the static HTML, so every link is crawlable
+ */
+import PracticeCard from './PracticeCard.astro';
+import Icon from './Icon.astro';
+interface Item { href: string; title: string; summary: string; icon: string; linkText: string }
+interface Props { items: Item[]; label: string }
+const { items, label } = Astro.props;
+---
+<div class="slider" data-slider>
+  <ul class="slider__track" aria-label={label} tabindex="0">
+    {items.map((it) => (
+      <li class="slider__slide">
+        <PracticeCard {...it} />
+      </li>
+    ))}
+  </ul>
+  <div class="slider__controls">
+    <div class="slider__progress" aria-hidden="true"><span class="slider__bar"></span></div>
+    <button type="button" class="slider__btn" data-prev aria-label="Previous practice areas"><Icon name="arrow" class="slider__prev-icon" /></button>
+    <button type="button" class="slider__btn" data-toggle aria-pressed="false" aria-label="Pause automatic scrolling">
+      <svg class="slider__pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <svg class="slider__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>
+    </button>
+    <button type="button" class="slider__btn" data-next aria-label="Next practice areas"><Icon name="arrow" /></button>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    document.querySelectorAll('[data-slider]').forEach((root) => {
+      const track = root.querySelector('.slider__track');
+      const bar = root.querySelector('.slider__bar');
+      const toggle = root.querySelector('[data-toggle]');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const DELAY = 5000;
+      let timer = null, userPaused = reduce, hovering = false, visible = false;
+
+      const step = () => {
+        const slide = track.querySelector('.slider__slide');
+        return slide ? slide.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 0) : track.clientWidth;
+      };
+      const atEnd = () => track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      const go = (dir) => {
+        if (dir > 0 && atEnd()) track.scrollTo({ left: 0, behavior: reduce ? 'auto' : 'smooth' });
+        else track.scrollBy({ left: dir * step(), behavior: reduce ? 'auto' : 'smooth' });
+      };
+      const updateBar = () => {
+        const max = track.scrollWidth - track.clientWidth;
+        bar.style.width = `${Math.max(12, ((track.clientWidth) / track.scrollWidth) * 100)}%`;
+        bar.style.transform = `translateX(${max > 0 ? (track.scrollLeft / max) * ((100 / parseFloat(bar.style.width)) * 100 - 100) : 0}%)`;
+      };
+      const stop = () => { clearInterval(timer); timer = null; };
+      const sync = () => {
+        stop();
+        if (!userPaused && !hovering && visible && !document.hidden) timer = setInterval(() => go(1), DELAY);
+      };
+      const setPaused = (p) => {
+        userPaused = p;
+        root.classList.toggle('is-paused', p);
+        toggle.setAttribute('aria-pressed', String(p));
+        toggle.setAttribute('aria-label', p ? 'Play automatic scrolling' : 'Pause automatic scrolling');
+        sync();
+      };
+
+      root.querySelector('[data-prev]').addEventListener('click', () => { go(-1); setPaused(true); });
+      root.querySelector('[data-next]').addEventListener('click', () => { go(1); setPaused(true); });
+      toggle.addEventListener('click', () => setPaused(!userPaused));
+      root.addEventListener('mouseenter', () => { hovering = true; sync(); });
+      root.addEventListener('mouseleave', () => { hovering = false; sync(); });
+      root.addEventListener('focusin', () => { hovering = true; sync(); });
+      root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget)) { hovering = false; sync(); } });
+      track.addEventListener('touchstart', () => setPaused(true), { passive: true });
+      track.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(1); setPaused(true); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); setPaused(true); }
+      });
+      track.addEventListener('scroll', () => requestAnimationFrame(updateBar), { passive: true });
+      window.addEventListener('resize', updateBar, { passive: true });
+      document.addEventListener('visibilitychange', sync);
+      new IntersectionObserver(([en]) => { visible = en.isIntersecting; sync(); }, { threshold: 0.4 }).observe(root);
+
+      root.classList.add('is-ready');
+      setPaused(userPaused);
+      updateBar();
+    });
+  })();
+</script>

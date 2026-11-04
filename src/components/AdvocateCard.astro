@@ -1,0 +1,23 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props { href: string; name: string; enrolment: string; jobTitle?: string; focus: string; image: ImageMetadata; imageAlt: string; headingTag?: 'h2' | 'h3' | 'h4' }
+const { href, name, enrolment, jobTitle, focus, image, imageAlt, headingTag = 'h3' } = Astro.props;
+const H = headingTag;
+---
+<article class="advocate-card reveal">
+  <div class="advocate-card__img">
+    <Image src={image} alt={imageAlt} widths={[320, 480, 640]} sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 92vw" loading="lazy" />
+  </div>
+  <div class="advocate-card__body">
+    <p class="advocate-card__role">{jobTitle ?? enrolment}</p>
+    <H><a class="card__link" href={href}>{name}</a></H>
+    {jobTitle && <p class="advocate-card__focus">{enrolment}</p>}
+    <p class="advocate-card__focus">{focus}</p>
+    <span class="text-link" aria-hidden="true">View profile</span>
+  </div>
+</article>
+<style>
+  .advocate-card .card__link { position: static; }
+  .advocate-card .card__link::after { content: ''; position: absolute; inset: 0; }
+</style>

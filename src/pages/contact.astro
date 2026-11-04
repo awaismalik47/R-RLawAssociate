@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/ContactForm.astro';
+import ContactDetails from '../components/ContactDetails.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import PillarDivider from '../components/PillarDivider.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, whatsappLink } from '../data/site';
+import { legalService } from '../lib/schema';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Contact', href: '/contact/' },
+];
+const contactPage = { '@type': 'ContactPage', name: `Contact ${SITE.name}`, url: `${SITE.url}/contact/`, about: { '@id': `${SITE.url}/#legalservice` } };
+---
+<BaseLayout
+  title="Contact R&R Law Associates Lahore Near the High Court"
+  description="Contact R&R Law Associates Lahore at Siddiqi Plaza, 7 Turner Road, Mozang Chungi, near Lahore High Court. Call, WhatsApp or book a consultation online."
+  breadcrumbs={crumbs}
+  jsonLd={[legalService(), contactPage]}
+>
+  <PageHero
+    title="Contact R&R Law Associates, Lahore"
+    eyebrow="Contact"
+    intro="Visit our office in Mozang Chungi, call or message us on WhatsApp, or send the consultation form. Please book before visiting so that an advocate is available to see you."
+    crumbs={crumbs}
+  >
+    <div class="btn-row" style="margin-top:1.75rem">
+      <a class="btn btn--gold" href={SITE.phoneHref}><Icon name="phone" />Call {SITE.phoneDisplay}</a>
+      <a class="btn btn--outline-light" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp Us</a>
+    </div>
+  </PageHero>
+
+  <section class="section" id="consultation">
+    <div class="container contact-grid">
+      <div>
+        <h2>Office details</h2>
+        <span class="rule"></span>
+        <ContactDetails />
+      </div>
+      <ContactForm />
+    </div>
+  </section>
+
+  <section class="section section--stone" id="directions">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Find our office</p>
+        <h2>Directions to R&amp;R Law Associates in Mozang Chungi</h2>
+        <span class="rule"></span>
+        <p>We are on the first floor of Siddiqi Plaza, 7 Turner Road, Mozang Chungi, in central Lahore. Turner Road runs between Mozang Chungi and Lower Mall, close to the Lahore High Court and the Civil Secretariat. <span class="placeholder">[PLACEHOLDER: add a nearby landmark visible from the road, e.g. the shop or bank on the ground floor]</span></p>
+      </div>
+      <div class="directions grid grid--3">
+        <article class="reveal">
+          <h3>From Lahore High Court</h3>
+          <p>Leave the High Court on Shahrah-e-Quaid-e-Azam (The Mall) and head towards GPO Chowk, then take Lower Mall west towards Mozang. Turn onto Turner Road towards Mozang Chungi. Siddiqi Plaza is on Turner Road; our office is on the first floor. The journey is usually a few minutes by car or rickshaw.</p>
+        </article>
+        <article class="reveal">
+          <h3>From GPO Chowk</h3>
+          <p>From GPO Chowk on The Mall, take Lower Mall past the Lahore High Court side and continue towards Mozang. Turn onto Turner Road and continue towards Mozang Chungi until you reach Siddiqi Plaza. Take the stairs or lift to the first floor.</p>
+        </article>
+        <article class="reveal">
+          <h3>From Mall Road (Regal Chowk side)</h3>
+          <p>From Regal Chowk, head along Queen's Road towards Mozang Chungi, or take Mozang Road from Mall Road. At Mozang Chungi, turn onto Turner Road. Siddiqi Plaza is a short distance along Turner Road. Parking on the road is limited, so a rickshaw or ride-hailing service is often easier.</p>
+        </article>
+      </div>
+      <p class="notice mt-2"><span class="placeholder">[PLACEHOLDER: please check these directions on the ground and adjust street names or turns if needed.]</span> If you are lost, call us on <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a> and we will guide you.</p>
+      <div class="mt-2">
+        <h3>Map</h3>
+        <MapEmbed />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--narrow center">
+      <PillarDivider />
+      <h2 class="mt-2">Before you visit</h2>
+      <p>Bring your CNIC and copies of all documents relating to your matter. If a hearing date or deadline is approaching, mention it when you book so that we can see you in time. Read about <a href="/process/">what happens at a consultation</a> or browse <a href="/practice-areas/">our practice areas</a>.</p>
+      <p class="notice">Contacting us does not by itself create a lawyer-client relationship. Please do not send confidential documents through the form. See our <a href="/disclaimer/">disclaimer and privacy notice</a>.</p>
+    </div>
+  </section>
+</BaseLayout>

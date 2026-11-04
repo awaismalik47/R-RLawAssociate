@@ -1,0 +1,95 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { getEntries, getEntry, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import CTASection from '../components/CTASection.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, abs, whatsappLink } from '../data/site';
+import { article, faqPage } from '../lib/schema';
+import { formatDate } from '../lib/i18n';
+
+interface Props { entry: CollectionEntry<'guides'> }
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content, headings } = await render(entry);
+const author = await getEntry(d.author);
+const practice = await getEntry(d.practiceArea);
+const related = await getEntries(d.related);
+const url = `/guides/${entry.id}/`;
+const authorUrl = `/advocates/${author.id}/`;
+const shareImg = await getImage({ src: d.image, width: 1200, format: 'jpeg' });
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Legal Guides', href: '/guides/' },
+  { name: d.title, href: url },
+];
+const toc = headings.filter((h) => h.depth === 2);
+const iso = (x: Date) => x.toISOString().slice(0, 10);
+const jsonLd = [
+  article({
+    headline: d.title, description: d.description, url, image: abs(shareImg.src),
+    datePublished: d.published, dateModified: d.updated, authorName: author.data.name, authorUrl,
+  }),
+  ...(d.faqs.length ? [faqPage(d.faqs)] : []),
+];
+---
+<BaseLayout title={d.seoTitle} description={d.description} breadcrumbs={crumbs} jsonLd={jsonLd} type="article"
+  image={shareImg.src} imageAlt={d.imageAlt} published={d.published} modified={d.updated}>
+  <PageHero title={d.title} eyebrow="Legal guide" intro={d.excerpt} crumbs={crumbs}>
+    <p class="byline">
+      <span>By <a href={authorUrl} rel="author">{author.data.name}</a>, {SITE.name}</span>
+      <span>Published <time datetime={iso(d.published)}>{formatDate(d.published)}</time></span>
+      <span>Updated <time datetime={iso(d.updated)}>{formatDate(d.updated)}</time></span>
+    </p>
+  </PageHero>
+
+  <section class="section">
+    <div class="container with-sidebar">
+      <article>
+        <nav class="toc" aria-labelledby="toc-title">
+          <h2 id="toc-title">In this guide</h2>
+          <ol>
+            {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+            {d.faqs.length > 0 && <li><a href="#faqs">Frequently asked questions</a></li>}
+          </ol>
+        </nav>
+        <figure class="frame-wrap" style="margin:0 0 3rem">
+          <div class="frame">
+            <Image src={d.image} alt={d.imageAlt} widths={[480, 760, 1000, 1280]} sizes="(min-width: 1024px) 760px, 92vw" loading="lazy" />
+          </div>
+        </figure>
+        <div class="prose">
+          <Content />
+          {d.faqs.length > 0 && <h2 id="faqs">Frequently asked questions</h2>}
+        </div>
+        {d.faqs.length > 0 && <FAQAccordion faqs={d.faqs} />}
+        <p class="notice mt-2">
+          This guide gives general information about Pakistani law as at the date shown above. It is not legal advice, and the right course depends on the facts of each case.
+          For advice on your own matter, <a href="/contact/">contact R&R Law Associates in Lahore</a>.
+        </p>
+      </article>
+
+      <aside class="sidebar" aria-label="Related help">
+        <div class="sidebar-box sidebar-box--navy">
+          <h2>Need help with this?</h2>
+          <p>Read about how we handle these cases on our <a href={`/practice-areas/${practice.id}/`}>{practice.data.label.toLowerCase()} page</a>, or speak to an advocate.</p>
+          <a class="btn btn--gold" href={SITE.phoneHref}><Icon name="phone" />Call {SITE.phoneDisplay}</a>
+          <a class="btn btn--outline-light" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
+        </div>
+        <div class="sidebar-box">
+          <h2>About the author</h2>
+          <p><a href={authorUrl}>{author.data.name}</a> is an advocate at {SITE.name}, Lahore.</p>
+        </div>
+        {related.length > 0 && (
+          <nav class="sidebar-box" aria-labelledby="guide-related">
+            <h2 id="guide-related">Related practice areas</h2>
+            <ul>{related.map((r) => <li><a href={`/practice-areas/${r.id}/`}>{r.data.label}</a></li>)}</ul>
+          </nav>
+        )}
+      </aside>
+    </div>
+  </section>
+  <CTASection />
+</BaseLayout>

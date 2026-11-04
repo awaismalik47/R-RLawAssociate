@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE } from '../data/site';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Page not found', href: '/404/' },
+];
+const links = [
+  ['/practice-areas/', 'Practice areas'],
+  ['/advocates/', 'Our advocates'],
+  ['/about/', 'About the firm'],
+  ['/overseas-pakistanis/', 'Help for overseas Pakistanis'],
+  ['/guides/', 'Legal guides'],
+  ['/faq/', 'Frequently asked questions'],
+  ['/contact/', 'Contact and directions'],
+  ['/ur/', 'اردو ویب سائٹ'],
+];
+---
+<BaseLayout
+  title="Page Not Found (404) | R&R Law Associates, Lahore Lawyers"
+  description="The page you were looking for could not be found. Use these links to reach our practice areas, legal guides or contact page, or call our Lahore office."
+  noindex
+>
+  <PageHero title="Page not found" eyebrow="Error 404" crumbs={crumbs}
+    intro="The page may have moved, or the address may have been typed incorrectly. These links will take you to the main sections of the website." />
+  <section class="section">
+    <div class="container container--narrow">
+      <h2>Main sections</h2>
+      <ul class="check-list">
+        {links.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+      </ul>
+      <p class="mt-2">Or call us on <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>.</p>
+    </div>
+  </section>
+</BaseLayout>
