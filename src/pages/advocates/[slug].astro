@@ -56,6 +56,7 @@ const jsonLd = [
           <div><dt>Years of practice</dt><dd>{d.yearsOfPractice}</dd></div>
           <div><dt>Education</dt><dd>{d.education.join('; ')}</dd></div>
           <div><dt>Bar memberships</dt><dd>{d.barMemberships.join('; ')}</dd></div>
+          {d.positions.length > 0 && <div><dt>Positions held</dt><dd>{d.positions.join('; ')}</dd></div>}
         </dl>
 
         <h2 class="mt-3">Areas of practice</h2>
