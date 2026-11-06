@@ -64,6 +64,7 @@ const advocates = defineCollection({
       education: z.array(z.string()),
       alumniOf: z.array(z.string()).default([]),
       barMemberships: z.array(z.string()),
+      positions: z.array(z.string()).default([]),
       focus: z.array(reference('practiceAreas')),
       knowsAbout: z.array(z.string()),
       image: image(),
